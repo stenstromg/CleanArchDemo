@@ -1,9 +1,7 @@
 ﻿.page {
-  /*&.unq-theme-dk {
-        background-color: #232527;*/
-  /* Button - outlined */
-  /*.rz-button.rz-variant-text.rz-primary.rz-shade-default {
-            color: #acd6fb !important;
-        }
-    }*/
+  /*#region RadzenFormField override */
+  /*#endregion RadzenFormField override */
+}
+.page .rz-form-field-content .rz-form-field-label {
+  color: var(--rz-base-200) !important;
 }

@@ -2,10 +2,10 @@
   text-align: left;
   border-radius: 10px;
   border: 1px solid #4f4f4f;
-  background-color: transparent;
+  background-color: var(--rz-base-300);
 }
 .unq-login-layout .rz-card.unq-login-title label.unq-title {
-  color: #4f4f4f;
+  color: var(--rz-base-light);
   font-size: 2rem;
   font-weight: 600;
   font-family: "Segoe UI";
