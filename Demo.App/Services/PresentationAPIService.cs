@@ -1,4 +1,5 @@
-﻿using Demo.Domain.Models;
+﻿using Demo.App.Models.DTO;
+using Demo.Domain.Models;
 
 namespace Demo.App.Services
 {
@@ -29,11 +30,11 @@ namespace Demo.App.Services
     /// <summary>
     /// Provides access to the WebAPI functions of the PresentationAPI WebAPI services
     /// </summary>
-    public class PresentationAPIService(IWebApiSvcService apiService) : IPresentationAPIService
+    public class PresentationAPIService(IWebApiRepoService apiService) : IPresentationAPIService
     {
         #region properties
 
-        IWebApiSvcService _service { get; set; } = apiService;
+        IWebApiRepoService _service { get; set; } = apiService;
 
         string _apiKey { get; set; } = "PresentationAPI";
 

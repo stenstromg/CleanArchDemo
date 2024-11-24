@@ -56,8 +56,8 @@ namespace Demo.WebApp
             builder.Services.AddScoped<IPersonService, PersonService>();
 
             builder.Services.AddTransient<IPresentationAPIService, PresentationAPIService>();
-            builder.Services.AddTransient<IWebApiSvcService, WebApiSvcService>();
-            builder.Services.AddTransient<IWebAPIService>(provider => new WebAPIService(configuration));
+            builder.Services.AddTransient<IWebApiRepoService, WebApiRepoService>();
+            builder.Services.AddTransient<IWebAPIRepository>(provider => new WebAPIRepository(configuration));
 
             #endregion register custom services
 

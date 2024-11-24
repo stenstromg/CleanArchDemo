@@ -1,3 +1,6 @@
 ﻿.rz-button-md {
   text-transform: capitalize !important;
 }
+.page .rz-form-field-content .rz-form-field-label {
+  color: var(--rz-base-100) !important;
+}

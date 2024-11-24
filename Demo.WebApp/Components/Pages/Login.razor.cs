@@ -1,5 +1,6 @@
 ﻿using Demo.App.Interfaces;
 using Demo.App.Models;
+using Demo.App.Models.DTO;
 using Demo.Domain.Models;
 using Demo.WebApp.Classes;
 using Demo.WebApp.Components.Forms;
@@ -27,21 +28,6 @@ namespace Demo.WebApp.Components.Pages
 
         #region data
 
-        async Task<UserLogin?> PostLoginRequest(string username, string password)
-        {
-            if (this.ApiService != null)
-            {
-                CredentialsModel credentialsModel = new CredentialsModel() {Username = username, Password = password};
-                UserLogin? result = await this.ApiService.PostData<UserLogin, CredentialsModel>("PresentationAPI:Login", credentialsModel);
-
-                return result;
-            }
-            else
-            {
-                throw new NullReferenceException("CreateContact key for PresentationAPI node was not found in appsettings.");
-            }
-        }
-
         /// <summary>
         /// Processes the request to register a new user and contact (every user must have a contact).
         /// </summary>
@@ -50,9 +36,10 @@ namespace Demo.WebApp.Components.Pages
         /// <exception cref="NullReferenceException"></exception>
         async Task<Contact?> RegisterNewUser(UserLoginRegistrationModel registrationData)
         {
-            if (this.ApiService != null)
+            if (this.ApiRepositorySvc != null)
             {
-                return await this.ApiService.PostData<Contact, UserLoginRegistrationModel>("PresentationAPI:Register", registrationData);
+                Contact? ret = await this.ApiRepositorySvc.PostData<Contact, UserLoginRegistrationModel>("PresentationAPI:Register", registrationData);
+                return ret;
             }
             else
             {
@@ -75,23 +62,20 @@ namespace Demo.WebApp.Components.Pages
 
         #region event handlers
 
-        async void LoginComponent_OnLogin(LoginComponent source)
+        void LoginComponent_OnLogin(UserLogin userLogin)
         {
-            string? username = source.Username;
-            string? password = source.Password;  
-
-            UserLogin? userLogin = await this.PostLoginRequest(username, password);
-
             if (userLogin != null)
             {
-                this.SessionService.ActiveUser = userLogin;
-                this.NavManager.NavigateTo("/");
-            }
-            else
-            {
-                // handle error
-            }
+                if (this.SessionService != null)
+                {
+                    this.SessionService.ActiveUser = userLogin;
+                }
 
+                if (this.NavManager != null)
+                {
+                    this.NavManager.NavigateTo("/");
+                }
+            }
         }
 
         void LoginComponent_OnRegister()
@@ -106,18 +90,10 @@ namespace Demo.WebApp.Components.Pages
             StateHasChanged();
         }
 
-        async void NewLoginCoponent_OnRegister(UserLoginRegistrationModel registrationData)
+        void NewLoginCoponent_OnRegisterSuccess(Contact contact)
         {
-            try
-            {
-                await this.RegisterNewUser(registrationData);
-                this.ShowNewLoginForm = false;
-                StateHasChanged();
-            }
-            catch (Exception ex)
-            {
-                // Handle exception
-            }
+            this.ShowNewLoginForm = false;
+
         }
 
         #endregion event handlers

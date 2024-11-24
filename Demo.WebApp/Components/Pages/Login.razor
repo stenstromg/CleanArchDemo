@@ -6,9 +6,9 @@
 
 @if (ShowNewLoginForm)
 {
-    <NewLoginComponent OnCancelClick="@NewLoginCoponent_OnCancel" OnRegisterClick="@NewLoginCoponent_OnRegister"></NewLoginComponent>
+    <NewLoginComponent OnCancelClick="@NewLoginCoponent_OnCancel" OnRegisterSuccess="@NewLoginCoponent_OnRegisterSuccess"></NewLoginComponent>
 }
 else
 {
-    <LoginComponent OnRegisterClick="@LoginComponent_OnRegister" OnLoginClick="@LoginComponent_OnLogin"></LoginComponent>
+    <LoginComponent OnRegisterClick="@LoginComponent_OnRegister" OnLoginSuccess="@LoginComponent_OnLogin"></LoginComponent>
 }

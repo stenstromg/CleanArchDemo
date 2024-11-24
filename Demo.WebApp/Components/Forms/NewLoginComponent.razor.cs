@@ -1,5 +1,6 @@
 ﻿using Demo.App.Interfaces;
 using Demo.App.Models;
+using Demo.App.Models.DTO;
 using Demo.Domain.Models;
 using Demo.WebApp.Classes;
 using Demo.WebApp.Classes.Utilities;
@@ -12,7 +13,11 @@ namespace Demo.WebApp.Components.Forms
     {
         #region properties
 
+        string? ErrorMessage { get; set; } = null;
+
         UserLoginRegistrationModel FormData { get; set; } = new UserLoginRegistrationModel();
+
+        bool ShowErrorMessage { get; set; } = false;
 
         #endregion properties
 
@@ -22,14 +27,14 @@ namespace Demo.WebApp.Components.Forms
         public EventCallback OnCancelClick { get; set; }
 
         [Parameter]
-        public EventCallback<UserLoginRegistrationModel> OnRegisterClick { get; set; }
+        public EventCallback<Contact> OnRegisterSuccess { get; set; }
 
         #endregion parameters
 
         #region inject
 
         [Inject]
-        public IWebAPIService? ApiService { get; set; }
+        public IWebAPIRepository? ApiService { get; set; }
 
         #endregion inject
 
@@ -40,11 +45,46 @@ namespace Demo.WebApp.Components.Forms
         /// </summary>
         /// <param name="contact"></param>
         /// <returns></returns>
-        async Task<Contact?> Save(UserLoginRegistrationModel formData)
+        async Task<Contact?> RegisterNewUser(UserLoginRegistrationModel formData)
         {
-            if (this.ApiService != null)
+            // Prepare and validate the form data
+            //
+            List<string> validationErrors = formData.Validate().ToList();
+            if (validationErrors.Count > 0)
             {
-                return await this.ApiService.PostData<Contact, UserLoginRegistrationModel>("PresentationAPI:Register", formData);
+                this.ErrorMessage = validationErrors.First();
+                this.ShowErrorMessage = true;
+                return null;
+            }
+
+            // If the form passed validation, prepare the form contents to be saved.
+            //
+            //formData.PrepareForSave();
+
+            if (this.ApiRepositorySvc != null)
+            {
+                //Contact? retValue = await this.ApiRepositorySvc.PostData<Contact, UserLoginRegistrationModel>("PresentationAPI:Register", formData);
+                //return retValue;
+             
+                WebServiceResponse? response = await this.ApiRepositorySvc.PostData2<Contact, UserLoginRegistrationModel>("PresentationAPI:Register", formData);
+
+                Contact? ret = null;
+
+                if (response != null)
+                {
+                    switch (response.StatusCode)
+                    {
+                        case System.Net.HttpStatusCode.OK:
+                            ret = (Contact)response.Payload;
+                            break;
+                        default:
+                            this.ErrorMessage = $"Api Request failed : {response.StatusCode}";
+                            this.ShowErrorMessage = true;
+                            break;
+                    }
+                }
+
+                return ret;
             }
             else
             {
@@ -77,11 +117,18 @@ namespace Demo.WebApp.Components.Forms
 
         async void form_OnSubmit()
         {
-            if (this.OnRegisterClick.HasDelegate)
+            Contact? contact = await this.RegisterNewUser(this.FormData);
+            if (contact != null)
             {
-                //ContactModelUtilities.PrepareContactForSave(this.FormData);
-                await this.OnRegisterClick.InvokeAsync(this.FormData);
+                await this.OnRegisterSuccess.InvokeAsync(contact);
             }
+        }
+
+        void txBox_OnChange()
+        {
+            this.ErrorMessage = null;
+            this.ShowErrorMessage = false;
+            base.StateHasChanged();
         }
 
         #endregion event handlers

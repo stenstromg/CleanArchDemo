@@ -83,7 +83,7 @@ namespace Demo.App.Models
         {
 
             List<string> errors = new List<string>();
-            return errors;
+            //return errors;
 
             // Verify the data provided in the model.
             //
@@ -91,30 +91,32 @@ namespace Demo.App.Models
             //
             if (StringUtilities.IsUndefined(this.EmailAddress))
             {
-                throw new ArgumentNullException(nameof(this.EmailAddress), "EmailAddress is required when creating a new contact");
+                errors.Add("Email Address was not provided");
+                //throw new ArgumentNullException(nameof(this.EmailAddress), "EmailAddress is required when creating a new contact");
             }
-
-            Email email = new Email(this.EmailAddress);
 
             // First Name/Last Name are required
             // 
             if (StringUtilities.IsUndefined(this.Person?.FirstName) || StringUtilities.IsUndefined(this.Person?.LastName))
             {
-                throw new ArgumentNullException(nameof(this.Person), "First Name and Last Name are required");
+                errors.Add("First Name and Last Name are required");
+                //throw new ArgumentNullException(nameof(this.Person), "First Name and Last Name are required");
             }
 
             // Username is required
             //
             if (StringUtilities.IsUndefined(this.Username))
             {
-                throw new ArgumentNullException(nameof(this.Username), "Username is required");
+                errors.Add("Username is required");
+                //throw new ArgumentNullException(nameof(this.Username), "Username is required");
             }
 
             // Password must pass validation
             //
             if (!this.Password.IsValid(out string? errMsg))
             {
-                throw new ArgumentNullException(nameof(this.Password.NewPassword), errMsg);
+                errors.Add(errMsg);
+                //throw new ArgumentNullException(nameof(this.Password.NewPassword), errMsg);
             }
 
             return errors;

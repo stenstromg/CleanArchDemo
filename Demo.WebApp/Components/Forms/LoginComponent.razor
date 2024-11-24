@@ -11,16 +11,18 @@
         <RadzenStack Orientation="@Orientation.Vertical" class="unq-row-container">
 
             <RadzenFormField Text="Username" Variant="@Variant.Outlined" class="unq-form-field">
-                <RadzenTextBox @bind-Value="@this.Username" Name="UserID"></RadzenTextBox>
+                <RadzenTextBox @bind-Value="@this.Username" Name="UserID" Change="txUserID_OnChange"></RadzenTextBox>
             </RadzenFormField>
 
             <RadzenFormField Text="Password" Variant="@Variant.Outlined" class="unq-form-field">
-                <RadzenPassword @bind-Value="@this.Password" Name="UserPWD"></RadzenPassword>
+                <RadzenPassword @bind-Value="@this.Password" Name="UserPWD" Change="txPassword_OnChange"></RadzenPassword>
             </RadzenFormField>
 
+            @if(this.ShowErrorMessage){ <div style="color:lightcoral;">@this.ErrorMessage</div> }
+
             <div class="unq-row-button">
-                <RadzenButton Variant="@Variant.Text" Text="Login" Click="@(()=> btnLogin_OnClick())"></RadzenButton>
-                <RadzenButton Variant="@Variant.Text" Text="Create Account" ButtonStyle="@ButtonStyle.Primary" Click="@(()=> btnRegister_OnClick())"/>
+                <RadzenButton Variant="@Variant.Text" Text="Login"    Click="@(()=> btnLogin_OnClick())"    ButtonStyle="@ButtonStyle.Primary" Shade="@Shade.Light"></RadzenButton>
+                <RadzenButton Variant="@Variant.Text" Text="Register" Click="@(()=> btnRegister_OnClick())" ButtonStyle="@ButtonStyle.Secondary" Shade="@Shade.Lighter"/>
             </div>
         </RadzenStack>
 

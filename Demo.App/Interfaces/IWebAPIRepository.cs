@@ -1,4 +1,5 @@
-﻿using Demo.Domain.Models;
+﻿using Demo.App.Models.DTO;
+using Demo.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Demo.App.Interfaces
 {
-    public interface IWebAPIService
+    public interface IWebAPIRepository
     {
         /// <summary>
         ///  Returns the data retreived from the service found at the appsettings path identified 
@@ -40,6 +41,7 @@ namespace Demo.App.Interfaces
         ///  The data to post to the URL identified by the <paramref name="apiKey"/> argument
         ///  </param>
         /// <returns></returns>
-        Task<RetType?> PostData<RetType,ArgType>(string apiKey, ArgType postData) where RetType : class;
+        //Task<RetType?> PostData<RetType,ArgType>(string apiKey, ArgType postData) where RetType : class;
+        Task<WebServiceResponse> PostData<RetType, ArgType>(string apiKey, ArgType postData) where RetType : class;
     }
 }

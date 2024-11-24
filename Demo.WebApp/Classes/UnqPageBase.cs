@@ -1,4 +1,5 @@
 ﻿using Demo.App.Interfaces;
+using Demo.App.Services;
 using Demo.WebApp.Classes.Services;
 using Microsoft.AspNetCore.Components;
 using Radzen;
@@ -11,7 +12,7 @@ namespace Demo.WebApp.Classes
         #region inject
 
         [Inject]
-        public IWebAPIService? ApiService { get; set; }
+        public IWebApiRepoService? ApiRepositorySvc { get; set; }
 
         [Inject]
         public NavigationManager? NavManager { get; set; }

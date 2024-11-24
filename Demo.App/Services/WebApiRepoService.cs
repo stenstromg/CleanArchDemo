@@ -1,8 +1,9 @@
 ﻿using Demo.App.Interfaces;
+using Demo.App.Models.DTO;
 
 namespace Demo.App.Services
 {
-    public interface IWebApiSvcService
+    public interface IWebApiRepoService
     {
         /// <summary>
         ///  Returns the data retreived from the service found at the appsettings path identified 
@@ -26,13 +27,15 @@ namespace Demo.App.Services
         ///  </param>
         /// <returns></returns>
         Task<RetType?> PostData<RetType, ArgType>(string apiKey, ArgType postData) where RetType : class;
+
+        Task<WebServiceResponse?> PostData2<RetType, ArgType>(string apiKey, ArgType postData) where RetType : class;
     }
 
-    public class WebApiSvcService(IWebAPIService webAPIService) : IWebApiSvcService
+    public class WebApiRepoService(IWebAPIRepository webAPIService) : IWebApiRepoService
     {
         #region properties
 
-        IWebAPIService _service { get; set; } = webAPIService;
+        IWebAPIRepository _service { get; set; } = webAPIService;
 
         #endregion properties
 
@@ -49,8 +52,27 @@ namespace Demo.App.Services
 
         public async Task<RetType?> PostData<RetType, ArgType>(string apiKey, ArgType postData) where RetType : class
         {
-            RetType? ret = await _service.PostData<RetType, ArgType>(apiKey, postData);
-            return ret;
+            WebServiceResponse response = await _service.PostData<RetType, ArgType>(apiKey, postData);
+
+            if (response != null && response.Payload != null)
+            {
+                RetType? retType = response?.Payload as RetType;
+                return retType;
+            }
+            else if (response != null && response.Payload == null)
+            {
+                throw new HttpRequestException("Web Service call failed", null, response.StatusCode);
+            }
+            else
+            {
+                throw new HttpRequestException($"Post to service at {apiKey} failed");
+            }
+        }
+
+        public async Task<WebServiceResponse?> PostData2<RetType, ArgType>(string apiKey, ArgType postData) where RetType : class
+        {
+            WebServiceResponse response = await _service.PostData<RetType, ArgType>(apiKey, postData);
+            return response;
         }
 
         #endregion private

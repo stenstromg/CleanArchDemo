@@ -1,5 +1,6 @@
 ﻿using Demo.App.Interfaces;
 using Demo.App.Models;
+using Demo.App.Models.DTO;
 using Demo.Domain.Models;
 using Demo.Domain.Security;
 using Microsoft.Extensions.Configuration;
@@ -11,7 +12,7 @@ using System.Text.Json;
 
 namespace Demo.Infrastructure.Services
 {
-    public class WebAPIService(IConfigurationManager configuration) : IWebAPIService
+    public class WebAPIRepository(IConfigurationManager configuration) : IWebAPIRepository
     {
         #region properties
 
@@ -56,7 +57,7 @@ namespace Demo.Infrastructure.Services
             }
         }
 
-        public async Task<RetType?> PostData<RetType, ArgType>(string apiKey, ArgType postData) where RetType : class
+        public async Task<WebServiceResponse> PostData<RetType, ArgType>(string apiKey, ArgType postData) where RetType : class
         {
             CancellationTokenSource tokenSource = new CancellationTokenSource();
             CancellationToken cancellationToken = tokenSource.Token;
@@ -73,28 +74,39 @@ namespace Demo.Infrastructure.Services
                 HttpClient client = new();
                 string apiUrl = $"{baseUri}{path}";
 
-                // Prepare the payload data
+                // Prepare the requestPayload data
                 //
-                var json = JsonConvert.SerializeObject(postData, new JsonSerializerSettings()
-                                                       {
-                                                           ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                                                       });
+                var json = JsonConvert.SerializeObject(postData, new JsonSerializerSettings() 
+                           { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
 
-                var payload = new StringContent(json, Encoding.UTF8, "application/json");
+                var requestPayload = new StringContent(json, Encoding.UTF8, "application/json");
 
-                HttpResponseMessage response = await client.PostAsync(apiUrl, payload, cancellationToken);
-                response.EnsureSuccessStatusCode();
+                // Get the response from the WebApi web service
+                //
+                HttpResponseMessage webApiResponse = await client.PostAsync(apiUrl, requestPayload, cancellationToken);
 
-                if (response.IsSuccessStatusCode)
+                // Declare the variable which will return value and status code to the consumer
+                //
+                WebServiceResponse returnPayload;
+
+                // If the WebService returns a success code then process the return value and ppulate
+                // the returnPayload
+                //
+                if (webApiResponse.IsSuccessStatusCode)
                 {
-                    string jsonResult = await response.Content.ReadAsStringAsync(cancellationToken);
+                    string jsonResult = await webApiResponse.Content.ReadAsStringAsync(cancellationToken);
                     RetType? ret = System.Text.Json.JsonSerializer.Deserialize<RetType>(jsonResult);
-                    return ret;
+
+                    returnPayload = new WebServiceResponse(System.Net.HttpStatusCode.OK, ret);
                 }
+
+                // Otherwise, populate the returnPayload with failure StatusCode
                 else
                 {
-                    throw new Exception($"An exception occured posting to {apiUrl}");
+                    returnPayload = new WebServiceResponse(webApiResponse.StatusCode, null);
                 }
+
+                return returnPayload;
             }
         }
 

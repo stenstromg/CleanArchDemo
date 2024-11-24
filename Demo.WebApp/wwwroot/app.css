@@ -1,15 +1,16 @@
 @import url("./css/Themes/RadzenTheme-FluentDark.css");
 @import url("./css/Themes/ThemeDark.css");
-@import url("./css/AppOverride.css");
-@import url("./css/AppCustom.css");
 @import url("./css/Component/LoginComponent.css");
 
-/*
 html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-size:15px;
+    font-family: "Gabarito", sans-serif !important;
+    font-optical-sizing: auto !important;
+    font-weight: 500 !important;
+    font-style: normal !important;
+    font-size: 15px !important;
 }
 
+/*
 a, .btn-link {
     color: #006bb7;
 }
