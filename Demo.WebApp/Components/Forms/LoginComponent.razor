@@ -1,0 +1,36 @@
+﻿@inherits UnqComponentBase
+
+<RadzenCard Variant="@Variant.Filled" class="unq-login-title">
+    <label>Login</label>
+</RadzenCard>
+
+<RadzenCard Variant="@Variant.Filled" class="unq-login-component">
+    <RadzenStack Orientation="@Orientation.Vertical" Style="max-width:50vw;">
+
+        
+        <RadzenStack Orientation="@Orientation.Vertical" class="unq-row-container">
+            <div class="unq-row-username">
+                <div class="unq-labeled-textbox-container">
+                    <label class="unq-textbox-label">Username</label>
+                    <RadzenTextBox @bind-Value="@this.Username" Name="UserID"></RadzenTextBox>
+                </div>
+            </div>
+            <div class="unq-row-password">
+                <div class="unq-labeled-textbox-container">
+                    <label class="unq-textbox-label">Password</label>
+                    <RadzenPassword @bind-Value="@this.Password" Name="UserPWD"></RadzenPassword>
+                </div>
+            </div>
+@*             <div class="unq-row-forgot-pwd-link">
+                <a href="#">Reset Password</a>
+            </div> *@
+            <div class="unq-row-button">
+                <RadzenButton Text="Login" Click="@(()=> btnLogin_OnClick())"></RadzenButton>
+            </div>
+            <div class="unq-row-new-user-link">
+                <RadzenButton Variant="@Variant.Text" Text="Create Account" ButtonStyle="@ButtonStyle.Primary" Click="@(()=> btnRegister_OnClick())"/>
+            </div>
+        </RadzenStack>
+
+    </RadzenStack>
+</RadzenCard>

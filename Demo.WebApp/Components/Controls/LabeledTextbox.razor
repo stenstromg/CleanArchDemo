@@ -1,0 +1,16 @@
+﻿@inherits UnqComponentBase
+
+<div class="unq-labeled-textbox-container" id="@ID">
+
+    <label class="unq-textbox-label">@Label</label>
+
+    @if (this.IsPassword)
+    {
+        <RadzenPassword Name="@Name" class="unq-textbox-control" @bind-Value="@this.Value"></RadzenPassword>
+    }
+    else
+    {
+        <RadzenTextBox Name="@Name" class="unq-textbox-control" @bind-Value="@this.Value"></RadzenTextBox>
+    }
+
+</div>

@@ -1,0 +1,13 @@
+﻿@inherits UnqPageBase
+@page "/Test"
+@rendermode InteractiveServer
+
+<PageTitle>Bind Event</PageTitle>
+
+<h1>Bind Event Example</h1>
+
+<input @bind="searchText" @bind:after="PerformSearch" />
+<input @bind="searchText" @bind:event="oninput" @bind:after="PerformSearch" />
+
+@code {
+}

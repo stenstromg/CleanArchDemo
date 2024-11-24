@@ -1,0 +1,22 @@
+﻿[
+  {
+    "outputFile": "Components/Layout/LoginLayout.razor.css",
+    "inputFile": "Components/Layout/LoginLayout.razor.less"
+  },
+  {
+    "outputFile": "wwwroot/css/AppCustom.css",
+    "inputFile": "wwwroot/css/AppCustom.less"
+  },
+  {
+    "outputFile": "wwwroot/css/AppOverride.css",
+    "inputFile": "wwwroot/css/AppOverride.less"
+  },
+  {
+    "outputFile": "Components/Forms/LoginComponent.razor.css",
+    "inputFile": "Components/Forms/LoginComponent.razor.less"
+  },
+  {
+    "outputFile": "Components/Forms/NewLoginComponent.razor.css",
+    "inputFile": "Components/Forms/NewLoginComponent.razor.less"
+  }
+]

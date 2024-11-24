@@ -1,0 +1,7 @@
+﻿/*#region Labeled Textbox Control */
+.unq-labeled-textbox-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+/*#endregion Labeled Textbox Control */
