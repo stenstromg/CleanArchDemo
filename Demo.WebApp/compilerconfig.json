@@ -30,5 +30,21 @@
   {
     "outputFile": "wwwroot/css/NewLoginComponent.css",
     "inputFile": "wwwroot/css/NewLoginComponent.less"
+  },
+  {
+    "outputFile": "wwwroot/css/Layout/Layout-Login.css",
+    "inputFile": "wwwroot/css/Layout/Layout-Login.less"
+  },
+  {
+    "outputFile": "wwwroot/css/Component/NewLoginComponent.css",
+    "inputFile": "wwwroot/css/Component/NewLoginComponent.less"
+  },
+  {
+    "outputFile": "wwwroot/css/Component/LoginComponent.css",
+    "inputFile": "wwwroot/css/Component/LoginComponent.less"
+  },
+  {
+    "outputFile": "wwwroot/css/Themes/ThemeDark.css",
+    "inputFile": "wwwroot/css/Themes/ThemeDark.less"
   }
 ]

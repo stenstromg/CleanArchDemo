@@ -19,8 +19,8 @@
 
   <ItemGroup>
     <None Include="compilerconfig.json" />
-    <None Include="wwwroot\css\LoginComponent.less" />
-    <None Include="wwwroot\css\NewLoginComponent.less" />
+    <None Include="wwwroot\css\Component\LoginComponent.less" />
+    <None Include="wwwroot\css\Component\NewLoginComponent.less" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,6 +31,10 @@
     <ProjectReference Include="..\Demo.App\Demo.App.csproj" />
     <ProjectReference Include="..\Demo.Domain\Demo.Domain.csproj" />
     <ProjectReference Include="..\Demo.Infrastructure\Demo.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\css\Layout\" />
   </ItemGroup>
 
 </Project>

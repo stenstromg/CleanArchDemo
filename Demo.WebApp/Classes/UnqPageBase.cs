@@ -1,6 +1,7 @@
 ﻿using Demo.App.Interfaces;
 using Demo.WebApp.Classes.Services;
 using Microsoft.AspNetCore.Components;
+using Radzen;
 
 namespace Demo.WebApp.Classes
 {
@@ -18,13 +19,15 @@ namespace Demo.WebApp.Classes
         [Inject]
         public IApplicationSessionService? SessionService { get; set; }
 
+        [Inject]
+        public ThemeService? ThemeService{ get; set; }
+
         #endregion inject
 
         #region lifecycle
 
         protected override Task OnInitializedAsync()
         {
-
             return base.OnInitializedAsync();
         }
 

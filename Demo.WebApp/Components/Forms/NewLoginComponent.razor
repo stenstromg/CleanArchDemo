@@ -2,8 +2,8 @@
 
 <RadzenTemplateForm TItem="UserLoginRegistrationModel" Data="@this.FormData" Submit="@form_OnSubmit" InvalidSubmit="@form_OnInvalidSubmit" class="unq-register-form">
 
-<RadzenCard Variant="@Variant.Filled" class="unq-register-title">
-    <label>Register</label>
+<RadzenCard Variant="@Variant.Filled" class="unq-login-title">
+    <label class="unq-title">Register</label>
 </RadzenCard>
 
 
@@ -12,30 +12,59 @@
 
 
         <RadzenStack Orientation="@Orientation.Vertical" class="unq-row-container">
-            <div class="unq-row unq-row-firstName">
+
+            <RadzenFormField Text="First Name" Variant="@Variant.Outlined" class="unq-form-field">
+                <RadzenTextBox @bind-Value="@this.FormData.Person.FirstName" Name="FirstName"></RadzenTextBox>
+            </RadzenFormField>
+
+            <RadzenFormField Text="Last Name" Variant="@Variant.Outlined" class="unq-form-field">
+                <RadzenTextBox @bind-Value="@this.FormData.Person.LastName" Name="LastName"></RadzenTextBox>
+            </RadzenFormField>
+
+            <RadzenFormField Text="Email" Variant="@Variant.Outlined" class="unq-form-field">
+                <RadzenTextBox @bind-Value="@this.FormData.EmailAddress" Name="Email"></RadzenTextBox>
+            </RadzenFormField>
+
+            <RadzenFormField Text="Username" Variant="@Variant.Outlined" class="unq-form-field">
+                <RadzenTextBox @bind-Value="@this.FormData.Username" Name="Username"></RadzenTextBox>
+            </RadzenFormField>
+
+            <RadzenFormField Text="Password" Variant="@Variant.Outlined" class="unq-form-field">
+                <RadzenTextBox @bind-Value="@this.FormData.Password.NewPassword" Name="NewPWD"></RadzenTextBox>
+            </RadzenFormField>
+
+            <RadzenFormField Text="Confirm Password" Variant="@Variant.Outlined" class="unq-form-field">
+                <RadzenTextBox @bind-Value="@this.FormData.Password.ConfirmPassword" Name="RepeatPWD"></RadzenTextBox>
+            </RadzenFormField>
+
+
+
+
+
+
+@*             <div class="unq-row unq-row-firstName">
                 <div class="unq-labeled-textbox-container">
                     <label class="unq-textbox-label">First Name</label>
-                    <RadzenTextBox @bind-Value="@this.FormData.Person.FirstName" Name="FirstName"></RadzenTextBox>
                 </div>
-            </div>
+            </div> 
             <div class="unq-row unq-row-lastName">
                 <div class="unq-labeled-textbox-container">
                     <label class="unq-textbox-label">Last Name</label>
                     <RadzenTextBox @bind-Value="@this.FormData.Person.LastName" Name="LastName"></RadzenTextBox>
                 </div>
-            </div>
+                </div>
             <div class="unq-row unq-row-email">
                 <div class="unq-labeled-textbox-container">
                     <label class="unq-textbox-label">Email</label>
                     <RadzenTextBox @bind-Value="@this.FormData.EmailAddress" Name="Email"></RadzenTextBox>
                 </div>
-            </div>
+                </div>
             <div class="unq-row unq-row-username">
                 <div class="unq-labeled-textbox-container">
                     <label class="unq-textbox-label">Username</label>
                     <RadzenTextBox @bind-Value="@this.FormData.Username" Name="Username"></RadzenTextBox>
                 </div>
-            </div>
+                </div>
             <div class="unq-row unq-row-pwd1">
                 <div class="unq-labeled-textbox-container">
                     <label class="unq-textbox-label">Password</label>
@@ -50,10 +79,10 @@
                 </div>
                 <RadzenRequiredValidator Component="RepeatPWD" Text="Enter Password" Popup="true" Style="position: absolute" />
                     <RadzenCompareValidator Component="RepeatPWD" Value="@this.FormData.Password.NewPassword" Text="Passwords should match" />
-            </div>
-            <div class="unq-row unq-row-save-button">
+                </div>*@
+            <div class="unq-row unq-row-save-button" style="display:flex;justify-content:flex-end;">
                 <RadzenButton Variant="@Variant.Filled" Text="Register" ButtonStyle="@ButtonStyle.Primary" ButtonType="@ButtonType.Submit" />
-                <RadzenButton Variant="@Variant.Text" Text="Cancel"     ButtonStyle="@ButtonStyle.Base" Click="@(()=> btnCancel_OnClick())" />
+                <RadzenButton Variant="@Variant.Filled" Text="Cancel"     ButtonStyle="@ButtonStyle.Base" Click="@(()=> btnCancel_OnClick())" />
             </div>
         </RadzenStack>
 
