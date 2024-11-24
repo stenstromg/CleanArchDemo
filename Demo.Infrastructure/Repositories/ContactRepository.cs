@@ -4,6 +4,7 @@ using Demo.Domain.Models;
 using Demo.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using System.Data;
 using System.Linq.Expressions;
 
 namespace Demo.Infrastructure.Repositories
@@ -49,7 +50,7 @@ namespace Demo.Infrastructure.Repositories
 
             if (errMsg != null && errMsg.Count() > 0)
             {
-                throw new ArgumentException(errMsg.FirstOrDefault());
+                throw new InvalidDataException(errMsg.FirstOrDefault());
             }
 
             using (IDbContextTransaction transaction = this._db.Database.BeginTransaction())
@@ -60,11 +61,20 @@ namespace Demo.Infrastructure.Repositories
 
                 try
                 {
+                    // Check to make sure that the Username is unique
+                    //
+                    UserLogin userLogin = this._db.UserLogins.Where(e => e.Username.ToLower() == model.Username.ToLower()).FirstOrDefault();
+
+                    if (userLogin != null)
+                    {
+                        throw new DuplicateNameException("The username is already in use");
+                    }
+
                     // Save associated PhoneNumber in order to get an ID. 
                     //
                     if (model.PhoneNumber != null)
                     {
-                        model.PhoneNumber.UpdatedBy   = model.PhoneNumber.CreatedBy   = this._updatedBy;
+                        model.PhoneNumber.UpdatedBy = model.PhoneNumber.CreatedBy = this._updatedBy;
                         model.PhoneNumber.UpdatedDate = model.PhoneNumber.CreatedDate = this._timestamp;
                         this._db.PhoneNumbers.Add(model.PhoneNumber);
                     }
@@ -73,49 +83,53 @@ namespace Demo.Infrastructure.Repositories
                     //
                     if (model.Email != null)
                     {
-                        model.Email.UpdatedBy   = model.Email.CreatedBy   = this._updatedBy;
+                        model.Email.UpdatedBy = model.Email.CreatedBy = this._updatedBy;
                         model.Email.UpdatedDate = model.Email.CreatedDate = this._timestamp;
                         this._db.Emails.Add(model.Email);
                     }
 
                     // Save associated Person in order to get an ID. 
                     //
-                    model.Person.CreatedBy   = model.Person.UpdatedBy   = this._updatedBy;
+                    model.Person.CreatedBy = model.Person.UpdatedBy = this._updatedBy;
                     model.Person.CreatedDate = model.Person.UpdatedDate = this._timestamp;
                     this._db.People.Add(model.Person);
 
                     // Save associated UserLogin in order to get an ID. 
                     //
-                    model.UserLogin.CreatedBy   = model.UserLogin.UpdatedBy   = this._updatedBy;
+                    model.UserLogin.CreatedBy = model.UserLogin.UpdatedBy = this._updatedBy;
                     model.UserLogin.CreatedDate = model.UserLogin.UpdatedDate = this._timestamp;
-                    model.UserLogin.Person      = model.Person;
-                    model.UserLogin.Email       = model.Email;
+                    model.UserLogin.Person = model.Person;
+                    model.UserLogin.Email = model.Email;
                     this._db.UserLogins.Add(model.UserLogin);
 
                     this._db.SaveChanges();
 
                     contact = new Contact()
                     {
-                        DbAction             = Domain.Enums.EntityActions.Add,
-                        PrimaryEmailID       = model.Email?.ID,
+                        DbAction = Domain.Enums.EntityActions.Add,
+                        PrimaryEmailID = model.Email?.ID,
                         PrimaryPhoneNumberID = model.PhoneNumber?.ID,
-                        Emails               = (model.Email == null) ? new List<Email>() : new List<Email>() { model.Email },
-                        PhoneNumbers         = (model.PhoneNumber == null) ? new List<PhoneNumber>() :  new List<PhoneNumber>() { model.PhoneNumber },
-                        Person               = model.Person,
-                        UserProfile          = model.UserLogin,
-                        CreatedBy            = this._updatedBy,
-                        CreatedDate          = this._timestamp,
-                        UpdatedDate          = this._timestamp,
-                        UpdatedBy            = this._updatedBy,
+                        Emails = (model.Email == null) ? new List<Email>() : new List<Email>() { model.Email },
+                        PhoneNumbers = (model.PhoneNumber == null) ? new List<PhoneNumber>() : new List<PhoneNumber>() { model.PhoneNumber },
+                        Person = model.Person,
+                        UserProfile = model.UserLogin,
+                        CreatedBy = this._updatedBy,
+                        CreatedDate = this._timestamp,
+                        UpdatedDate = this._timestamp,
+                        UpdatedBy = this._updatedBy,
                     };
 
                     this._db.Contacts.Add(contact);
                     this._db.SaveChanges();
                 }
+                catch (DuplicateNameException dupeX)
+                {
+                    throw new DuplicateNameException(dupeX.Message);
+                }
                 catch (Exception ex)
                 {
-                    while(ex.InnerException != null) ex = ex.InnerException;
-                    throw new DbUpdateException($"The Contact for Login failed to save : EXCEPTION MESSAGE :: {ex.Message}");
+                    while (ex.InnerException != null) ex = ex.InnerException;
+                    throw new DbUpdateException($"The Contact for Login failed to save : {ex.Message}");
                 }
 
                 transaction.Commit();
@@ -242,7 +256,6 @@ namespace Demo.Infrastructure.Repositories
             return false;
 
         }
-
 
         #endregion public
 

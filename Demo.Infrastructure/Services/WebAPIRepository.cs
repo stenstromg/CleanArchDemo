@@ -103,7 +103,7 @@ namespace Demo.Infrastructure.Services
                 // Otherwise, populate the returnPayload with failure StatusCode
                 else
                 {
-                    returnPayload = new WebServiceResponse(webApiResponse.StatusCode, null);
+                    returnPayload = new WebServiceResponse(webApiResponse.StatusCode, null, "Error");
                 }
 
                 return returnPayload;

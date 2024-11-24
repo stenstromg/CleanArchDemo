@@ -77,8 +77,12 @@ namespace Demo.WebApp.Components.Forms
                         case System.Net.HttpStatusCode.OK:
                             ret = (Contact)response.Payload;
                             break;
+                        case (System.Net.HttpStatusCode)601:
+                            this.ErrorMessage = "Duplicate username";
+                            this.ShowErrorMessage = true;
+                            break;
                         default:
-                            this.ErrorMessage = $"Api Request failed : {response.StatusCode}";
+                            this.ErrorMessage = $"Api Request failed : {response.Message}";
                             this.ShowErrorMessage = true;
                             break;
                     }
@@ -121,6 +125,10 @@ namespace Demo.WebApp.Components.Forms
             if (contact != null)
             {
                 await this.OnRegisterSuccess.InvokeAsync(contact);
+            }
+            else
+            {
+                base.StateHasChanged();
             }
         }
 

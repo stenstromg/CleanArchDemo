@@ -2,6 +2,7 @@
 using Demo.App.Services;
 using Demo.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -36,10 +37,21 @@ namespace Demo.PresentationAPI.Controllers
 
         [HttpPost, ActionName("Register")]
         [Route("/api/Register")]
-        public Contact Register([FromBody] UserLoginRegistrationModel dataModel)
+        public ActionResult<Contact> Register([FromBody] UserLoginRegistrationModel dataModel)
         {
-            Contact ret = this._service.Register(dataModel, "SYSTEM");
-            return ret;
+            try
+            {
+                Contact ret = this._service.Register(dataModel, "SYSTEM");
+                return Ok(ret);
+            }
+            catch (DuplicateNameException dupeX)
+            {
+                return StatusCode(601, new { Message = dupeX.Message });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         //// PUT api/<ContactController>/5

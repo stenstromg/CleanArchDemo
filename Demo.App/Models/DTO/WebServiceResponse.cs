@@ -13,19 +13,21 @@ namespace Demo.App.Models.DTO
         #region properties
 
 
-        public HttpStatusCode StatusCode { get; set; }
+        public string?  Message { get; set; }
 
         public object? Payload { get; set; }
 
+        public HttpStatusCode StatusCode { get; set; }
 
         #endregion properties
 
         #region ctor
 
-        public WebServiceResponse(HttpStatusCode statusCode, object? payload)
+        public WebServiceResponse(HttpStatusCode statusCode, object? payload, string? message = null)
         {
             this.StatusCode = statusCode;
             this.Payload = payload;
+            this.Message = message;
         }
 
         #endregion ctor
