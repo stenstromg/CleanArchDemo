@@ -35,6 +35,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\css\Layout\" />
+    <Folder Include="wwwroot\css\Fonts\" />
   </ItemGroup>
 
 </Project>

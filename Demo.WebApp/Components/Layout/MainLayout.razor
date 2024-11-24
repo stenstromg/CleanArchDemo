@@ -1,22 +1,40 @@
 ﻿@inherits LayoutComponentBase
 <div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+<RadzenComponents @rendermode="InteractiveServer"/>
+<RadzenLayout class="unq-main-layout">
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
+    <RadzenHeader>
+        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0">
+            <RadzenSidebarToggle Click="@(()=>{ this.Toggle_OnClick(); })" />
+            <RadzenLabel Text="Header" />
+        </RadzenStack>
+    </RadzenHeader>
 
-        <article class="content px-4">
+    <RadzenSidebar Expanded="@sidebar1Expanded">
+        <RadzenPanelMenu>
+            <RadzenPanelMenuItem Text="Home"  Icon="home"  Path="/"/>
+            <RadzenPanelMenuItem Text="Contacts" Icon="group" Path="/Contacts"/>
+            <RadzenPanelMenuItem Text="Budget" Icon="payments" Path="/Budget"/>
+            <RadzenPanelMenuItem Text="Sales" Icon="area_chart" Path="Sales"/>
+        </RadzenPanelMenu>
+    </RadzenSidebar>
+
+    <RadzenBody>
+        <div class="rz-p-4">
             @Body
-        </article>
-    </main>
-</div>
+        </div>
+    </RadzenBody>
 
+    <RadzenFooter>
+        Footer
+    </RadzenFooter>
+
+</RadzenLayout>
+
+</div>
+@* 
 <div id="blazor-error-ui">
     An unhandled error has occurred.
     <a href="" class="reload">Reload</a>
     <a class="dismiss">🗙</a>
-</div>
+</div> *@

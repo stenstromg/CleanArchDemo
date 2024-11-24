@@ -1,4 +1,10 @@
-﻿/*#region Labeled Textbox Control */
+﻿/*#region main layout */
+.unq-main-layout {
+  height: 100vh !important;
+  width: 100vw !important;
+}
+/*#endregion main layout */
+/*#region Labeled Textbox Control */
 .unq-labeled-textbox-container {
   display: flex;
   align-items: center;

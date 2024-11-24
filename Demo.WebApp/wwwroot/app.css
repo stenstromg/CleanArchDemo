@@ -10,6 +10,13 @@ html, body {
     font-size: 15px !important;
 }
 
+.page {
+
+    width: 100vw;
+    height: 100vh;
+
+}
+
 /*
 a, .btn-link {
     color: #006bb7;
