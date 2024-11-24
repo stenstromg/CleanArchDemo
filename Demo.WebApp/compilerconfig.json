@@ -18,5 +18,17 @@
   {
     "outputFile": "Components/Forms/NewLoginComponent.razor.css",
     "inputFile": "Components/Forms/NewLoginComponent.razor.less"
+  },
+  {
+    "outputFile": "wwwroot/css/LoginComponent.razor.css",
+    "inputFile": "wwwroot/css/LoginComponent.razor.less"
+  },
+  {
+    "outputFile": "wwwroot/css/LoginComponent.css",
+    "inputFile": "wwwroot/css/LoginComponent.less"
+  },
+  {
+    "outputFile": "wwwroot/css/NewLoginComponent.css",
+    "inputFile": "wwwroot/css/NewLoginComponent.less"
   }
 ]

@@ -5,12 +5,17 @@
 }
 .unq-login-layout .unq-register-form .unq-register-title {
   text-align: center;
+  border-radius: 10px;
 }
 .unq-login-layout .unq-register-form .unq-register-title label {
   font-size: 2rem;
   font-weight: 600;
   font-family: "Segoe UI";
   text-transform: uppercase;
+}
+.unq-login-layout .unq-register-form .unq-newlogin-component {
+  padding: 2rem;
+  border-radius: 10px;
 }
 .unq-login-layout .unq-register-form .unq-newlogin-component .unq-row {
   display: flex;

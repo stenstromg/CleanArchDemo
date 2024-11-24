@@ -1,5 +1,6 @@
 ﻿.unq-login-layout .unq-login-title {
   text-align: center;
+  border-radius: 10px;
 }
 .unq-login-layout .unq-login-title label {
   font-size: 2rem;
@@ -8,7 +9,7 @@
   text-transform: uppercase;
 }
 .unq-login-layout .unq-login-component {
-  border-radius: 15rem !important;
+  border-radius: 10px !important;
   padding-top: 3rem !important;
 }
 .unq-login-layout .unq-login-component .unq-row-container {

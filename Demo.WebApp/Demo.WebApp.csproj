@@ -13,10 +13,14 @@
   <ItemGroup>
     <_ContentIncludedByDefault Remove="compilerconfig.json" />
     <_ContentIncludedByDefault Remove="wwwroot\css\AppCustom.css" />
+    <None Remove="wwwroot\css\LoginComponent.razor.css" />
+    <None Remove="wwwroot\css\LoginComponent.razor.css.min" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="compilerconfig.json" />
+    <None Include="wwwroot\css\LoginComponent.less" />
+    <None Include="wwwroot\css\NewLoginComponent.less" />
   </ItemGroup>
 
   <ItemGroup>

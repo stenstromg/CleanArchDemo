@@ -19,5 +19,29 @@ namespace Demo.WebApp.Classes
         public IApplicationSessionService? SessionService { get; set; }
 
         #endregion inject
+
+        #region lifecycle
+
+        protected override Task OnInitializedAsync()
+        {
+
+            return base.OnInitializedAsync();
+        }
+
+
+        protected override void OnAfterRender(bool firstRender)
+        {
+            if (this.SessionService != null && this.SessionService.ActiveUser == null)
+            {
+                if (this.NavManager != null)
+                {
+                    this.NavManager.NavigateTo("/login");
+                }
+            }
+            base.OnAfterRender(firstRender);
+        }
+
+
+        #endregion lifecycle
     }
 }

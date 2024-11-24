@@ -13,6 +13,8 @@ namespace Demo.WebApp.Components.Pages
     {
         #region properties
 
+        string PageName = "Login";
+
         bool ShowNewLoginForm { get; set; } = false;
 
         #endregion properties
@@ -61,6 +63,14 @@ namespace Demo.WebApp.Components.Pages
         #endregion data
 
         #region lifecycle
+
+        /// <summary>
+        /// Override the baseclass implementation. 
+        /// </summary>
+        protected override void OnInitialized()
+        {
+        }
+
         #endregion lifecycle
 
         #region event handlers
