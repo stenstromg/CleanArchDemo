@@ -95,7 +95,8 @@ namespace Demo.Infrastructure.Services
                 if (webApiResponse.IsSuccessStatusCode)
                 {
                     string jsonResult = await webApiResponse.Content.ReadAsStringAsync(cancellationToken);
-                    RetType? ret = System.Text.Json.JsonSerializer.Deserialize<RetType>(jsonResult);
+                    //RetType? ret = System.Text.Json.JsonSerializer.Deserialize<RetType>(jsonResult);
+                    RetType? ret = JsonConvert.DeserializeObject<RetType>(jsonResult);
 
                     returnPayload = new WebServiceResponse(System.Net.HttpStatusCode.OK, ret);
                 }

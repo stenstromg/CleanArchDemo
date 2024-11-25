@@ -52,6 +52,7 @@ namespace Demo.Domain.Models
         /// <summary>
         /// Gets the List of User accounts associated with the Person
         /// </summary>
+        //[JsonPropertyName("userLogins")]
         public List<UserLogin>? UserLogins { get; set; }
 
         #endregion navigation properties

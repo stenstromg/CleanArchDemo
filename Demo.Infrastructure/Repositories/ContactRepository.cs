@@ -4,6 +4,7 @@ using Demo.Domain.Models;
 using Demo.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq.Expressions;
 
@@ -113,6 +114,7 @@ namespace Demo.Infrastructure.Repositories
                         PhoneNumbers = (model.PhoneNumber == null) ? new List<PhoneNumber>() : new List<PhoneNumber>() { model.PhoneNumber },
                         Person = model.Person,
                         UserProfile = model.UserLogin,
+                        UserID = model.UserLogin.ID,
                         CreatedBy = this._updatedBy,
                         CreatedDate = this._timestamp,
                         UpdatedDate = this._timestamp,
@@ -174,8 +176,10 @@ namespace Demo.Infrastructure.Repositories
 
         public List<Contact>? GetContacts(List<Expression<Func<Contact, bool>>>? filters = null)
         {
-            var query = from contact in this._db.Contacts
-                        select contact;
+            var query = this._db.Contacts.Include(c => c.Emails)
+                                         .Include(c => c.PhoneNumbers)
+                                         .Include(c => c.Person)
+                                         .AsQueryable();
 
             if (filters != null)
             {
@@ -185,7 +189,9 @@ namespace Demo.Infrastructure.Repositories
                 }
             }
 
-            return query?.ToList();
+            List<Contact> ret = query.ToList();
+
+            return ret;
         }
 
         public bool SaveContact(Contact contactModel, String updatedBy)

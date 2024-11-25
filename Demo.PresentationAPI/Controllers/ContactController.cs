@@ -2,7 +2,10 @@
 using Demo.App.Services;
 using Demo.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json;
 using System.Data;
+using System.Linq.Expressions;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -27,12 +30,26 @@ namespace Demo.PresentationAPI.Controllers
         //    return new string[] { "value1", "value2" };
         //}
 
-        //// GET api/<ContactController>/5
-        //[HttpGet("{id}")]
-        //public string Get(int id)
-        //{
-        //    return "value";
-        //}
+        [HttpPost, ActionName("GetContactsForUserID")]
+        [Route("/api/Contacts")]
+        public ActionResult<IEnumerable<Contact>> GetContactsForUserID([FromBody] dynamic dto)
+        {
+            try
+            {
+                var data = JsonConvert.DeserializeObject<dynamic>(dto.ToString());
+
+                List<Expression<Func<Contact, bool>>> filters = new();
+                long userID = data.id;
+                filters.Add(e=>e.UserID == userID);
+
+                var contactList = this._service.GetContacts(filters);
+                return Ok(contactList);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
 
         [HttpPost, ActionName("Register")]

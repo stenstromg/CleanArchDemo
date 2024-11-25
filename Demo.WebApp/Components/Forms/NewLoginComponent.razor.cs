@@ -92,7 +92,7 @@ namespace Demo.WebApp.Components.Forms
             }
             else
             {
-                throw new NullReferenceException("CreateContact key for PresentationAPI node was not found in appsettings.");
+                throw new NullReferenceException("ApiRepositoryService not available.");
             }
         }
 

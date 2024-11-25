@@ -1,0 +1,17 @@
+﻿@inherits UnqComponentBase
+
+@if(ShowErrorMessage)
+{
+    <div>@ErrorMessage</div>
+}
+else
+{
+    if(this.ContactList != null)
+    {
+        <h1>Contact List</h1>
+        foreach(Contact contact in this.ContactList)
+        {
+            <div>@($"{contact.Person?.LastName}, {contact.Person?.FirstName}")</div>
+        }
+    }
+}

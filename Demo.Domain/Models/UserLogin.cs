@@ -29,6 +29,7 @@ namespace Demo.Domain.Models
         [Column("locked", TypeName ="bit")]
         public bool IsLocked { get; set; } = false;
 
+        [JsonPropertyName("password")]
         [Column("password")]
         [StringLength (1000, MinimumLength = 5)]
         public string? Password{ get; set; }

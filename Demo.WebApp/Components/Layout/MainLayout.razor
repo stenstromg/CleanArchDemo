@@ -5,24 +5,34 @@
 
     <RadzenHeader>
         <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0">
-            <RadzenSidebarToggle Click="@(()=>{ this.Toggle_OnClick(); })" />
-            <RadzenLabel Text="Header" />
+            <div class="unq-menu-content-container">
+                <div class="unq-menu-content-left">
+                    <RadzenSidebarToggle Click="@(()=>{ this.Toggle_OnClick(); })" />
+                    <RadzenLabel class="unq-main-layout-label">My Tools</RadzenLabel>
+                    <ContactMenuComponent Visible="@ContactMenuIsVisible"></ContactMenuComponent>
+                </div>
+                <div class="unq-menu-content-right">
+                    HHJHJH
+                </div>
+            </div>
         </RadzenStack>
     </RadzenHeader>
 
     <RadzenSidebar Expanded="@sidebar1Expanded">
         <RadzenPanelMenu>
-            <RadzenPanelMenuItem Text="Home"  Icon="home"  Path="/"/>
-            <RadzenPanelMenuItem Text="Contacts" Icon="group" Path="/Contacts"/>
+            <RadzenPanelMenuItem Text="Home"  Icon="home"  Path="/" Click="@(()=> this.SetActiveMenu(Menus.None) )"/>
+            <RadzenPanelMenuItem Text="Contacts" Icon="group" Path="/Contacts" Click="@(()=> this.SetActiveMenu(Menus.ContactMenu) )"/>
             <RadzenPanelMenuItem Text="Budget" Icon="payments" Path="/Budget"/>
             <RadzenPanelMenuItem Text="Sales" Icon="area_chart" Path="Sales"/>
         </RadzenPanelMenu>
     </RadzenSidebar>
 
     <RadzenBody>
-        <div class="rz-p-4">
-            @Body
-        </div>
+        <CascadingValue Name="Layout" TValue="MainLayout" Value="this">
+            <div class="rz-p-4">
+                @Body
+            </div>
+        </CascadingValue>
     </RadzenBody>
 
     <RadzenFooter>

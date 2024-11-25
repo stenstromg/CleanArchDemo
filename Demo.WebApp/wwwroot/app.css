@@ -1,6 +1,7 @@
 @import url("./css/Themes/RadzenTheme-FluentDark.css");
 @import url("./css/Themes/ThemeDark.css");
 @import url("./css/Component/LoginComponent.css");
+@import url("./css/Layout/LayoutStyles.css");
 
 html, body {
     font-family: "Gabarito", sans-serif !important;

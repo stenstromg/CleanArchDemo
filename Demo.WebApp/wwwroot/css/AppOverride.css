@@ -4,3 +4,9 @@
 .page .rz-form-field-content .rz-form-field-label {
   color: var(--rz-base-100) !important;
 }
+.rz-menu:not(.rz-profile-menu) .rzi:not(.rz-navigation-item-icon-children) {
+  margin-inline: var(--rz-menu-item-icon-margin-inline);
+}
+.rz-splitbutton i.rzi {
+  margin-inline: 0 !important;
+}

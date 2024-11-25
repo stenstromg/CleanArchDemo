@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Demo.PresentationAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCleanArchDemoMigration : Migration
+    public partial class InitializeDemoDB : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -85,9 +85,10 @@ namespace Demo.PresentationAPI.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     PersonID = table.Column<long>(type: "bigint", nullable: true),
                     UserProfileID = table.Column<long>(type: "bigint", nullable: true),
-                    PrimaryEmailID = table.Column<long>(type: "bigint", nullable: true),
-                    PrimaryPhoneID = table.Column<long>(type: "bigint", nullable: true),
                     label = table.Column<string>(type: "nvarchar(120)", maxLength: 120, nullable: true),
+                    primary_email_id = table.Column<long>(type: "bigint", nullable: true),
+                    primary_phone_id = table.Column<long>(type: "bigint", nullable: true),
+                    user_id = table.Column<long>(type: "bigint", nullable: false),
                     created_by = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     created_date = table.Column<DateTime>(type: "DATETIME2", nullable: false),
                     updated_by = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
@@ -109,10 +110,10 @@ namespace Demo.PresentationAPI.Migrations
                 {
                     id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Domain = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    EmailUsername = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    email_domain = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    email_username = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     label = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ContactID = table.Column<long>(type: "bigint", nullable: false),
+                    contact_id = table.Column<long>(type: "bigint", nullable: true),
                     created_by = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     created_date = table.Column<DateTime>(type: "DATETIME2", nullable: false),
                     updated_by = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
@@ -122,11 +123,10 @@ namespace Demo.PresentationAPI.Migrations
                 {
                     table.PrimaryKey("PK_EMAILS", x => x.id);
                     table.ForeignKey(
-                        name: "FK_EMAILS_CONTACTS_ContactID",
-                        column: x => x.ContactID,
+                        name: "FK_EMAILS_CONTACTS_contact_id",
+                        column: x => x.contact_id,
                         principalTable: "CONTACTS",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "id");
                 });
 
             migrationBuilder.CreateTable(
@@ -141,7 +141,7 @@ namespace Demo.PresentationAPI.Migrations
                     line_number = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     extension = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     label = table.Column<string>(type: "nvarchar(120)", maxLength: 120, nullable: true),
-                    ContactID = table.Column<long>(type: "bigint", nullable: false),
+                    contact_id = table.Column<long>(type: "bigint", nullable: true),
                     created_by = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     created_date = table.Column<DateTime>(type: "DATETIME2", nullable: false),
                     updated_by = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
@@ -151,11 +151,10 @@ namespace Demo.PresentationAPI.Migrations
                 {
                     table.PrimaryKey("PK_PHONE_NUMBERS", x => x.id);
                     table.ForeignKey(
-                        name: "FK_PHONE_NUMBERS_CONTACTS_ContactID",
-                        column: x => x.ContactID,
+                        name: "FK_PHONE_NUMBERS_CONTACTS_contact_id",
+                        column: x => x.contact_id,
                         principalTable: "CONTACTS",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "id");
                 });
 
             migrationBuilder.CreateTable(
@@ -164,14 +163,14 @@ namespace Demo.PresentationAPI.Migrations
                 {
                     id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    EmailID = table.Column<long>(type: "bigint", nullable: false),
+                    EmailID = table.Column<long>(type: "bigint", nullable: true),
                     failed_login_count = table.Column<int>(type: "int", nullable: false),
                     enabled = table.Column<bool>(type: "bit", nullable: false),
                     locked = table.Column<bool>(type: "bit", nullable: false),
-                    password = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
+                    password = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     last_login_date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     password_must_be_changed = table.Column<bool>(type: "bit", nullable: false),
-                    username = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    username = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     PersonID = table.Column<long>(type: "bigint", nullable: true),
                     created_by = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     created_date = table.Column<DateTime>(type: "DATETIME2", nullable: false),
@@ -185,8 +184,7 @@ namespace Demo.PresentationAPI.Migrations
                         name: "FK_USER_LOGIN_EMAILS_EmailID",
                         column: x => x.EmailID,
                         principalTable: "EMAILS",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "id");
                     table.ForeignKey(
                         name: "FK_USER_LOGIN_PEOPLE_PersonID",
                         column: x => x.PersonID,
@@ -200,29 +198,19 @@ namespace Demo.PresentationAPI.Migrations
                 column: "PersonID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CONTACTS_PrimaryEmailID",
-                table: "CONTACTS",
-                column: "PrimaryEmailID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CONTACTS_PrimaryPhoneID",
-                table: "CONTACTS",
-                column: "PrimaryPhoneID");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_CONTACTS_UserProfileID",
                 table: "CONTACTS",
                 column: "UserProfileID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_EMAILS_ContactID",
+                name: "IX_EMAILS_contact_id",
                 table: "EMAILS",
-                column: "ContactID");
+                column: "contact_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PHONE_NUMBERS_ContactID",
+                name: "IX_PHONE_NUMBERS_contact_id",
                 table: "PHONE_NUMBERS",
-                column: "ContactID");
+                column: "contact_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TRANSACTIONS_AccountID",
@@ -240,20 +228,6 @@ namespace Demo.PresentationAPI.Migrations
                 column: "PersonID");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_CONTACTS_EMAILS_PrimaryEmailID",
-                table: "CONTACTS",
-                column: "PrimaryEmailID",
-                principalTable: "EMAILS",
-                principalColumn: "id");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_CONTACTS_PHONE_NUMBERS_PrimaryPhoneID",
-                table: "CONTACTS",
-                column: "PrimaryPhoneID",
-                principalTable: "PHONE_NUMBERS",
-                principalColumn: "id");
-
-            migrationBuilder.AddForeignKey(
                 name: "FK_CONTACTS_USER_LOGIN_UserProfileID",
                 table: "CONTACTS",
                 column: "UserProfileID",
@@ -265,14 +239,6 @@ namespace Demo.PresentationAPI.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_CONTACTS_EMAILS_PrimaryEmailID",
-                table: "CONTACTS");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_USER_LOGIN_EMAILS_EmailID",
-                table: "USER_LOGIN");
-
-            migrationBuilder.DropForeignKey(
                 name: "FK_CONTACTS_PEOPLE_PersonID",
                 table: "CONTACTS");
 
@@ -281,8 +247,11 @@ namespace Demo.PresentationAPI.Migrations
                 table: "USER_LOGIN");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_CONTACTS_PHONE_NUMBERS_PrimaryPhoneID",
+                name: "FK_CONTACTS_USER_LOGIN_UserProfileID",
                 table: "CONTACTS");
+
+            migrationBuilder.DropTable(
+                name: "PHONE_NUMBERS");
 
             migrationBuilder.DropTable(
                 name: "TRANSACTIONS");
@@ -291,19 +260,16 @@ namespace Demo.PresentationAPI.Migrations
                 name: "ACCOUNTS");
 
             migrationBuilder.DropTable(
-                name: "EMAILS");
-
-            migrationBuilder.DropTable(
                 name: "PEOPLE");
 
             migrationBuilder.DropTable(
-                name: "PHONE_NUMBERS");
+                name: "USER_LOGIN");
+
+            migrationBuilder.DropTable(
+                name: "EMAILS");
 
             migrationBuilder.DropTable(
                 name: "CONTACTS");
-
-            migrationBuilder.DropTable(
-                name: "USER_LOGIN");
         }
     }
 }

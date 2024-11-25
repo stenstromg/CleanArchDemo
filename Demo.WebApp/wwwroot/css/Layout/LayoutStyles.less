@@ -1,0 +1,25 @@
+﻿.unq-main-layout {
+
+    .unq-menu-content-container {
+        display: flex;
+        width: 100vw;
+
+        .unq-menu-content-left {
+
+            display: flex;
+            align-items: center;
+
+            .unq-main-layout-label {
+                width: calc((var(--rz-sidebar-width) - var(--rz-sidebar-toggle-icon-width) - var(--rz-sidebar-toggle-padding)) - var(--rz-sidebar-toggle-padding));
+            }
+        }
+        
+        .unq-menu-content-right {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            width: 100%;
+            padding-right: 1rem;
+        }
+    }
+}

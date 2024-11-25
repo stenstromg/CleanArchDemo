@@ -1,0 +1,50 @@
+﻿@inherits UnqComponentBase
+
+@if (this.Visible)
+{
+<RadzenMenu class="unq-main-menu">
+    <RadzenSplitButton Text="Contact" Icon="person" DropDownIcon="keyboard_double_arrow_down">
+        <ChildContent>
+            <RadzenSplitButtonItem Text="New Contact"      Value="1" Icon="person_add"/>
+            <RadzenSplitButtonItem Text="New Contact List" Value="2" Icon="playlist_add"/>
+        </ChildContent>
+    </RadzenSplitButton>
+    <RadzenMenuItem Text="Cardfile" Icon="view_agenda">
+        <RadzenMenuItem Text="New" Path="buttons" Icon="add_circle"></RadzenMenuItem>
+        <RadzenMenuItem Text="Open" Path="buttons" Icon="folder_open"></RadzenMenuItem>
+    </RadzenMenuItem>
+    <RadzenMenuItem Text="Inputs" Icon="payment" Disabled="true">
+        <RadzenMenuItem Text="CheckBox" Path="checkbox" Icon="check_circle"></RadzenMenuItem>
+        <RadzenMenuItem Text="TextBox" Path="textbox" Icon="input"></RadzenMenuItem>
+        <RadzenMenuItem Text="TextArea" Path="textarea" Icon="description"></RadzenMenuItem>
+        <RadzenMenuItem Text="Password" Path="password" Icon="payment"></RadzenMenuItem>
+        <RadzenMenuItem Text="Numeric" Path="numeric" Icon="aspect_ratio"></RadzenMenuItem>
+        <RadzenMenuItem Text="DatePicker" Path="datepicker" Icon="date_range"></RadzenMenuItem>
+    </RadzenMenuItem>
+    <RadzenMenuItem Text="Data" Icon="save">
+        <RadzenMenuItem Text="DataGrid" Path="datagrid" Icon="grid_on"></RadzenMenuItem>
+        <RadzenMenuItem Text="DataList" Path="datalist" Icon="list"></RadzenMenuItem>
+        <RadzenMenuItem Text="DropDown" Path="dropdown" Icon="dns"></RadzenMenuItem>
+        <RadzenMenuItem Text="DropDownDataGrid" Path="dropdown-datagrid" Icon="receipt"></RadzenMenuItem>
+        <RadzenMenuItem Text="ListBox" Path="listbox" Icon="view_list"></RadzenMenuItem>
+        <RadzenMenuItem Text="TemplateForm" Path="templateform" Icon="line_style"></RadzenMenuItem>
+    </RadzenMenuItem>
+    <RadzenMenuItem Text="Containers" Icon="account_box">
+        <RadzenMenuItem Text="Tabs" Path="tabs" Icon="tab"></RadzenMenuItem>
+        <RadzenMenuItem Text="Panel" Path="panel" Icon="content_paste"></RadzenMenuItem>
+        <RadzenMenuItem Text="Fieldset" Path="fieldset" Icon="account_balance_wallet"></RadzenMenuItem>
+        <RadzenMenuItem Text="Card" Path="card" Icon="line_style"></RadzenMenuItem>
+    </RadzenMenuItem>
+    <RadzenMenuItem Text="More">
+        <RadzenMenuItem Text="Item1"></RadzenMenuItem>
+        <RadzenMenuItem Text="Item2"></RadzenMenuItem>
+        <RadzenMenuItem Text="More items">
+            <RadzenMenuItem Text="More sub items">
+                <RadzenMenuItem Text="Item1"></RadzenMenuItem>
+                <RadzenMenuItem Text="Item2"></RadzenMenuItem>
+            </RadzenMenuItem>
+        </RadzenMenuItem>
+    </RadzenMenuItem>
+</RadzenMenu>
+}
+

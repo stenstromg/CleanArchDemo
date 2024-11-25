@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using Demo.Domain.Extensions;
 
@@ -16,6 +17,7 @@ namespace Demo.Domain.Models
         /// <remarks>
         ///  Phone numbers components are stored as strings to allow for proeceeding "0"s
         /// </remarks>
+        [JsonPropertyName("countryCode")]
         [Column("country_code")]
         [Length(minimumLength:3, maximumLength:3)]
         public string? CountryCode { get; set; }
@@ -26,6 +28,7 @@ namespace Demo.Domain.Models
         /// <remarks>
         ///  Phone numbers components are stored as strings to allow for proeceeding "0"s
         /// </remarks>
+        [JsonPropertyName("areaCode")]
         [Column("area_code")]
         [Length(minimumLength: 3, maximumLength: 3)]
         public string? AreaCode{ get; set; }
@@ -36,6 +39,7 @@ namespace Demo.Domain.Models
         /// <remarks>
         ///  Phone numbers components are stored as strings to allow for proeceeding "0"s
         /// </remarks>
+        [JsonPropertyName("prefix")]
         [Required]
         [Column("prefix")]
         [Length(minimumLength: 3, maximumLength: 3)]
@@ -47,6 +51,7 @@ namespace Demo.Domain.Models
         /// <remarks>
         ///  Phone numbers components are stored as strings to allow for proeceeding "0"s
         /// </remarks>
+        [JsonPropertyName("lineNumber")]
         [Required]
         [Column("line_number")]
         [Length(minimumLength: 4, maximumLength: 4)]
@@ -58,6 +63,7 @@ namespace Demo.Domain.Models
         /// <remarks>
         ///  Phone numbers components are stored as strings to allow for proeceeding "0"s
         /// </remarks>
+        [JsonPropertyName("extension")]
         [Column("extension")]
         [Length(minimumLength: 2, maximumLength: 9)]
         public string? Extension { get; set; }
@@ -65,6 +71,7 @@ namespace Demo.Domain.Models
         /// <summary>
         /// Gets/Sets the label of the Phone Number (e.g. Home, Cell, Business, etc.)
         /// </summary>
+        [JsonPropertyName("label")]
         [Column("label")]
         [MaxLength(120)]
         public string? Label { get; set; }
@@ -74,10 +81,13 @@ namespace Demo.Domain.Models
         #region navigation properties
 
 
+        [JsonPropertyName("contactId")]
         [ForeignKey("Contact")]
         [Column("contact_id")]
         public long? ContactId { get; set; }
 
+        [JsonPropertyName("contact")]
+        [Column("contact")]
         public virtual Contact Contact { get; set; } = null!;
 
         #endregion navigation properties

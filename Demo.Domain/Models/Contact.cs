@@ -17,16 +17,19 @@ namespace Demo.Domain.Models
         /// <summary>
         /// Gets/Sets the Person associated with this contact record
         /// </summary>
+        [JsonPropertyName("person")]
         public Person? Person { get; set; }
 
         /// <summary>
         /// Gets/Sets the userprofile / login associated with this contract record
         /// </summary>
+        [JsonPropertyName("userProfile")]
         public UserLogin? UserProfile { get; set; }
 
         /// <summary>
         /// Gets/Sets the Label for this contact (e.g. Mom, Daughter, Hiring Manager, etc.)
         /// </summary>
+        [JsonPropertyName("label")]
         [Column("label")]
         [MaxLength(120)]
         public string? Label { get; set; }
@@ -34,7 +37,7 @@ namespace Demo.Domain.Models
         /// <summary>
         /// Gets/Sets the Primary Email for this contact
         /// </summary>
-        //[ForeignKey("PrimaryEmail")]
+        [JsonPropertyName("primaryEmailID")]
         [Column("primary_email_id")]
         public long? PrimaryEmailID { get; set; }
 
@@ -44,8 +47,16 @@ namespace Demo.Domain.Models
         /// <summary>
         /// Gets/Sets the Primary phone number for this contact
         /// </summary>
+        [JsonPropertyName("primaryPhoneID")]
         [Column("primary_phone_id")]
         public long? PrimaryPhoneNumberID { get; set; }
+
+        /// <summary>
+        /// ID of the UserProfile that owns this contact. 
+        /// </summary>
+        [JsonPropertyName("userID")]
+        [Column("user_id")]
+        public long UserID { get; set; }
 
         #endregion properties
 
@@ -64,12 +75,14 @@ namespace Demo.Domain.Models
         /// Gets List of all Email addresses associated with this contact. When adding and removing 
         /// emails use AddEmail and RemoveEmail methods.
         /// </summary>
+        [JsonPropertyName("emails")]
         public virtual ICollection<Email> Emails { get; set; } = new HashSet<Email>();
 
         /// <summary>
         /// Gets List of all phone numbers associated with this contact. When adding and removing 
         /// phoneNumbers use AddPhoneNumbers and RemovePhoneNumbers methods.
         /// </summary>
+        [JsonPropertyName("phoneNumbers")]
         public virtual ICollection<PhoneNumber> PhoneNumbers { get; set; } = new HashSet<PhoneNumber>();   
 
         #endregion navigation properties

@@ -46,5 +46,9 @@
   {
     "outputFile": "wwwroot/css/Themes/ThemeDark.css",
     "inputFile": "wwwroot/css/Themes/ThemeDark.less"
+  },
+  {
+    "outputFile": "wwwroot/css/Layout/LayoutStyles.css",
+    "inputFile": "wwwroot/css/Layout/LayoutStyles.less"
   }
 ]

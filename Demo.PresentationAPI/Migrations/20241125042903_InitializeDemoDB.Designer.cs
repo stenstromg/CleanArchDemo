@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Demo.PresentationAPI.Migrations
 {
     [DbContext(typeof(DemoDbContext))]
-    [Migration("20241122004507_InitialCleanArchDemoMigration")]
-    partial class InitialCleanArchDemoMigration
+    [Migration("20241125042903_InitializeDemoDB")]
+    partial class InitializeDemoDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -30,7 +30,8 @@ namespace Demo.PresentationAPI.Migrations
                     b.Property<long>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
-                        .HasColumnName("id");
+                        .HasColumnName("id")
+                        .HasAnnotation("Relational:JsonPropertyName", "id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("ID"));
 
@@ -44,11 +45,13 @@ namespace Demo.PresentationAPI.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("created_by");
+                        .HasColumnName("created_by")
+                        .HasAnnotation("Relational:JsonPropertyName", "createdBy");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("DATETIME2")
-                        .HasColumnName("created_date");
+                        .HasColumnName("created_date")
+                        .HasAnnotation("Relational:JsonPropertyName", "createdDate");
 
                     b.Property<string>("Nickname")
                         .HasMaxLength(120)
@@ -63,11 +66,13 @@ namespace Demo.PresentationAPI.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("updated_by");
+                        .HasColumnName("updated_by")
+                        .HasAnnotation("Relational:JsonPropertyName", "updatedBy");
 
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("DATETIME2")
-                        .HasColumnName("updated_date");
+                        .HasColumnName("updated_date")
+                        .HasAnnotation("Relational:JsonPropertyName", "updatedDate");
 
                     b.HasKey("ID");
 
@@ -79,7 +84,8 @@ namespace Demo.PresentationAPI.Migrations
                     b.Property<long>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
-                        .HasColumnName("id");
+                        .HasColumnName("id")
+                        .HasAnnotation("Relational:JsonPropertyName", "id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("ID"));
 
@@ -87,11 +93,13 @@ namespace Demo.PresentationAPI.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("created_by");
+                        .HasColumnName("created_by")
+                        .HasAnnotation("Relational:JsonPropertyName", "createdBy");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("DATETIME2")
-                        .HasColumnName("created_date");
+                        .HasColumnName("created_date")
+                        .HasAnnotation("Relational:JsonPropertyName", "createdDate");
 
                     b.Property<string>("Label")
                         .HasMaxLength(120)
@@ -102,20 +110,28 @@ namespace Demo.PresentationAPI.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<long?>("PrimaryEmailID")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("primary_email_id");
 
-                    b.Property<long?>("PrimaryPhoneID")
-                        .HasColumnType("bigint");
+                    b.Property<long?>("PrimaryPhoneNumberID")
+                        .HasColumnType("bigint")
+                        .HasColumnName("primary_phone_id");
 
                     b.Property<string>("UpdatedBy")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("updated_by");
+                        .HasColumnName("updated_by")
+                        .HasAnnotation("Relational:JsonPropertyName", "updatedBy");
 
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("DATETIME2")
-                        .HasColumnName("updated_date");
+                        .HasColumnName("updated_date")
+                        .HasAnnotation("Relational:JsonPropertyName", "updatedDate");
+
+                    b.Property<long>("UserID")
+                        .HasColumnType("bigint")
+                        .HasColumnName("user_id");
 
                     b.Property<long?>("UserProfileID")
                         .HasColumnType("bigint");
@@ -124,13 +140,11 @@ namespace Demo.PresentationAPI.Migrations
 
                     b.HasIndex("PersonID");
 
-                    b.HasIndex("PrimaryEmailID");
-
-                    b.HasIndex("PrimaryPhoneID");
-
                     b.HasIndex("UserProfileID");
 
                     b.ToTable("CONTACTS");
+
+                    b.HasAnnotation("Relational:JsonPropertyName", "contact");
                 });
 
             modelBuilder.Entity("Demo.Domain.Models.Email", b =>
@@ -138,48 +152,62 @@ namespace Demo.PresentationAPI.Migrations
                     b.Property<long>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
-                        .HasColumnName("id");
+                        .HasColumnName("id")
+                        .HasAnnotation("Relational:JsonPropertyName", "id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("ID"));
 
-                    b.Property<long>("ContactID")
-                        .HasColumnType("bigint");
+                    b.Property<long?>("ContactId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("contact_id")
+                        .HasAnnotation("Relational:JsonPropertyName", "contactId");
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("created_by");
+                        .HasColumnName("created_by")
+                        .HasAnnotation("Relational:JsonPropertyName", "createdBy");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("DATETIME2")
-                        .HasColumnName("created_date");
+                        .HasColumnName("created_date")
+                        .HasAnnotation("Relational:JsonPropertyName", "createdDate");
 
                     b.Property<string>("Domain")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("email_domain")
+                        .HasAnnotation("Relational:JsonPropertyName", "domain");
 
                     b.Property<string>("EmailUsername")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("email_username")
+                        .HasAnnotation("Relational:JsonPropertyName", "emailUsername");
 
                     b.Property<string>("Label")
                         .HasColumnType("nvarchar(max)")
-                        .HasColumnName("label");
+                        .HasColumnName("label")
+                        .HasAnnotation("Relational:JsonPropertyName", "label");
 
                     b.Property<string>("UpdatedBy")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("updated_by");
+                        .HasColumnName("updated_by")
+                        .HasAnnotation("Relational:JsonPropertyName", "updatedBy");
 
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("DATETIME2")
-                        .HasColumnName("updated_date");
+                        .HasColumnName("updated_date")
+                        .HasAnnotation("Relational:JsonPropertyName", "updatedDate");
 
                     b.HasKey("ID");
 
-                    b.HasIndex("ContactID");
+                    b.HasIndex("ContactId");
 
                     b.ToTable("EMAILS");
+
+                    b.HasAnnotation("Relational:JsonPropertyName", "email");
                 });
 
             modelBuilder.Entity("Demo.Domain.Models.Person", b =>
@@ -187,7 +215,8 @@ namespace Demo.PresentationAPI.Migrations
                     b.Property<long>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
-                        .HasColumnName("id");
+                        .HasColumnName("id")
+                        .HasAnnotation("Relational:JsonPropertyName", "id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("ID"));
 
@@ -195,46 +224,56 @@ namespace Demo.PresentationAPI.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("created_by");
+                        .HasColumnName("created_by")
+                        .HasAnnotation("Relational:JsonPropertyName", "createdBy");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("DATETIME2")
-                        .HasColumnName("created_date");
+                        .HasColumnName("created_date")
+                        .HasAnnotation("Relational:JsonPropertyName", "createdDate");
 
                     b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("datetime2")
-                        .HasColumnName("dob");
+                        .HasColumnName("dob")
+                        .HasAnnotation("Relational:JsonPropertyName", "dateOfBirth");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("first_name");
+                        .HasColumnName("first_name")
+                        .HasAnnotation("Relational:JsonPropertyName", "firstName");
 
                     b.Property<string>("Gender")
                         .HasMaxLength(1)
                         .HasColumnType("nvarchar(1)")
-                        .HasColumnName("gender");
+                        .HasColumnName("gender")
+                        .HasAnnotation("Relational:JsonPropertyName", "gender");
 
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasMaxLength(120)
                         .HasColumnType("nvarchar(120)")
-                        .HasColumnName("last_name");
+                        .HasColumnName("last_name")
+                        .HasAnnotation("Relational:JsonPropertyName", "lastName");
 
                     b.Property<string>("UpdatedBy")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("updated_by");
+                        .HasColumnName("updated_by")
+                        .HasAnnotation("Relational:JsonPropertyName", "updatedBy");
 
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("DATETIME2")
-                        .HasColumnName("updated_date");
+                        .HasColumnName("updated_date")
+                        .HasAnnotation("Relational:JsonPropertyName", "updatedDate");
 
                     b.HasKey("ID");
 
                     b.ToTable("PEOPLE");
+
+                    b.HasAnnotation("Relational:JsonPropertyName", "person");
                 });
 
             modelBuilder.Entity("Demo.Domain.Models.PhoneNumber", b =>
@@ -242,7 +281,8 @@ namespace Demo.PresentationAPI.Migrations
                     b.Property<long>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
-                        .HasColumnName("id");
+                        .HasColumnName("id")
+                        .HasAnnotation("Relational:JsonPropertyName", "id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("ID"));
 
@@ -250,8 +290,9 @@ namespace Demo.PresentationAPI.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("area_code");
 
-                    b.Property<long>("ContactID")
-                        .HasColumnType("bigint");
+                    b.Property<long?>("ContactId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("contact_id");
 
                     b.Property<string>("CountryCode")
                         .HasColumnType("nvarchar(max)")
@@ -261,11 +302,13 @@ namespace Demo.PresentationAPI.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("created_by");
+                        .HasColumnName("created_by")
+                        .HasAnnotation("Relational:JsonPropertyName", "createdBy");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("DATETIME2")
-                        .HasColumnName("created_date");
+                        .HasColumnName("created_date")
+                        .HasAnnotation("Relational:JsonPropertyName", "createdDate");
 
                     b.Property<string>("Extension")
                         .HasColumnType("nvarchar(max)")
@@ -290,15 +333,17 @@ namespace Demo.PresentationAPI.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("updated_by");
+                        .HasColumnName("updated_by")
+                        .HasAnnotation("Relational:JsonPropertyName", "updatedBy");
 
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("DATETIME2")
-                        .HasColumnName("updated_date");
+                        .HasColumnName("updated_date")
+                        .HasAnnotation("Relational:JsonPropertyName", "updatedDate");
 
                     b.HasKey("ID");
 
-                    b.HasIndex("ContactID");
+                    b.HasIndex("ContactId");
 
                     b.ToTable("PHONE_NUMBERS");
                 });
@@ -308,7 +353,8 @@ namespace Demo.PresentationAPI.Migrations
                     b.Property<long>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
-                        .HasColumnName("id");
+                        .HasColumnName("id")
+                        .HasAnnotation("Relational:JsonPropertyName", "id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("ID"));
 
@@ -323,11 +369,13 @@ namespace Demo.PresentationAPI.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("created_by");
+                        .HasColumnName("created_by")
+                        .HasAnnotation("Relational:JsonPropertyName", "createdBy");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("DATETIME2")
-                        .HasColumnName("created_date");
+                        .HasColumnName("created_date")
+                        .HasAnnotation("Relational:JsonPropertyName", "createdDate");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("DATETIME2")
@@ -352,11 +400,13 @@ namespace Demo.PresentationAPI.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("updated_by");
+                        .HasColumnName("updated_by")
+                        .HasAnnotation("Relational:JsonPropertyName", "updatedBy");
 
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("DATETIME2")
-                        .HasColumnName("updated_date");
+                        .HasColumnName("updated_date")
+                        .HasAnnotation("Relational:JsonPropertyName", "updatedDate");
 
                     b.HasKey("ID");
 
@@ -370,7 +420,8 @@ namespace Demo.PresentationAPI.Migrations
                     b.Property<long>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
-                        .HasColumnName("id");
+                        .HasColumnName("id")
+                        .HasAnnotation("Relational:JsonPropertyName", "id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("ID"));
 
@@ -378,40 +429,46 @@ namespace Demo.PresentationAPI.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("created_by");
+                        .HasColumnName("created_by")
+                        .HasAnnotation("Relational:JsonPropertyName", "createdBy");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("DATETIME2")
-                        .HasColumnName("created_date");
+                        .HasColumnName("created_date")
+                        .HasAnnotation("Relational:JsonPropertyName", "createdDate");
 
-                    b.Property<long>("EmailID")
+                    b.Property<long?>("EmailID")
                         .HasColumnType("bigint");
 
                     b.Property<int>("FailedLoginCount")
                         .HasColumnType("int")
-                        .HasColumnName("failed_login_count");
+                        .HasColumnName("failed_login_count")
+                        .HasAnnotation("Relational:JsonPropertyName", "failedLoginCount");
 
                     b.Property<bool>("IsEnabled")
                         .HasColumnType("bit")
-                        .HasColumnName("enabled");
+                        .HasColumnName("enabled")
+                        .HasAnnotation("Relational:JsonPropertyName", "isEnabled");
 
                     b.Property<bool>("IsLocked")
                         .HasColumnType("bit")
-                        .HasColumnName("locked");
+                        .HasColumnName("locked")
+                        .HasAnnotation("Relational:JsonPropertyName", "isLocked");
 
                     b.Property<DateTime>("LastLoginDate")
                         .HasColumnType("datetime2")
-                        .HasColumnName("last_login_date");
+                        .HasColumnName("last_login_date")
+                        .HasAnnotation("Relational:JsonPropertyName", "lastLoginDate");
 
                     b.Property<string>("Password")
-                        .IsRequired()
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)")
                         .HasColumnName("password");
 
                     b.Property<bool>("PasswordMustBeChanged")
                         .HasColumnType("bit")
-                        .HasColumnName("password_must_be_changed");
+                        .HasColumnName("password_must_be_changed")
+                        .HasAnnotation("Relational:JsonPropertyName", "passwordMustBeChanged");
 
                     b.Property<long?>("PersonID")
                         .HasColumnType("bigint");
@@ -420,17 +477,19 @@ namespace Demo.PresentationAPI.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("updated_by");
+                        .HasColumnName("updated_by")
+                        .HasAnnotation("Relational:JsonPropertyName", "updatedBy");
 
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("DATETIME2")
-                        .HasColumnName("updated_date");
+                        .HasColumnName("updated_date")
+                        .HasAnnotation("Relational:JsonPropertyName", "updatedDate");
 
                     b.Property<string>("Username")
-                        .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)")
-                        .HasColumnName("username");
+                        .HasColumnName("username")
+                        .HasAnnotation("Relational:JsonPropertyName", "username");
 
                     b.HasKey("ID");
 
@@ -447,23 +506,11 @@ namespace Demo.PresentationAPI.Migrations
                         .WithMany()
                         .HasForeignKey("PersonID");
 
-                    b.HasOne("Demo.Domain.Models.Email", "PrimaryEmail")
-                        .WithMany()
-                        .HasForeignKey("PrimaryEmailID");
-
-                    b.HasOne("Demo.Domain.Models.PhoneNumber", "PrimaryPhone")
-                        .WithMany()
-                        .HasForeignKey("PrimaryPhoneID");
-
                     b.HasOne("Demo.Domain.Models.UserLogin", "UserProfile")
                         .WithMany()
                         .HasForeignKey("UserProfileID");
 
                     b.Navigation("Person");
-
-                    b.Navigation("PrimaryEmail");
-
-                    b.Navigation("PrimaryPhone");
 
                     b.Navigation("UserProfile");
                 });
@@ -472,9 +519,7 @@ namespace Demo.PresentationAPI.Migrations
                 {
                     b.HasOne("Demo.Domain.Models.Contact", "Contact")
                         .WithMany("Emails")
-                        .HasForeignKey("ContactID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ContactId");
 
                     b.Navigation("Contact");
                 });
@@ -483,9 +528,7 @@ namespace Demo.PresentationAPI.Migrations
                 {
                     b.HasOne("Demo.Domain.Models.Contact", "Contact")
                         .WithMany("PhoneNumbers")
-                        .HasForeignKey("ContactID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ContactId");
 
                     b.Navigation("Contact");
                 });
@@ -501,9 +544,7 @@ namespace Demo.PresentationAPI.Migrations
                 {
                     b.HasOne("Demo.Domain.Models.Email", "Email")
                         .WithMany()
-                        .HasForeignKey("EmailID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("EmailID");
 
                     b.HasOne("Demo.Domain.Models.Person", "Person")
                         .WithMany("UserLogins")
