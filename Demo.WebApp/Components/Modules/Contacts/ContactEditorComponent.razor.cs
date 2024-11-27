@@ -14,6 +14,10 @@ namespace Demo.WebApp.Components.Modules.Contacts
 
         DialogOptions? DialogOptions { get; set; }
 
+        bool ShowErrorMessage { get; set; } = false;
+
+        string? ErrorMessage { get; set; }
+
         #endregion properties
 
         #region parameters
@@ -38,18 +42,27 @@ namespace Demo.WebApp.Components.Modules.Contacts
 
         #region data
 
-        private async Task SaveContact()
+        private async Task<Contact?> SaveContact()
         {
+            Contact? ret = this.Contact;
+
             try
             {
                 if (this.ContactApiService != null && this.Contact != null)
                 {
-                    Contact ret = await this.ContactApiService.SaveContact("SaveContact", this.Contact);
+                    string? apiURL = base.AppConfigService?.GetWebServiceFunctionURL("SaveContact");
+
+                    ret = await this.ContactApiService.SaveContact(apiURL, this.Contact);
                 }
             }
             catch(Exception ex)
             {
+                this.ErrorMessage = ex.Message;
+                this.ShowErrorMessage = true;
             }
+
+
+            return ret;
         }
 
         #endregion data
@@ -77,51 +90,98 @@ namespace Demo.WebApp.Components.Modules.Contacts
             base.StateHasChanged();
         }
 
-        void btnEditEmail_OnClick(long emailID)
-        {
-            this.LaunchEmailEditor(emailID);
-        }
-
         void EmailEditor_OnChange()
         {
             base.Layout?.ContactMenu?.EnableSaveButton(true);
         }
 
-        void MenuBtnSave_OnClick()
+        async void MenuBtnSave_OnClick()
         {
-            string save = "Now is the time to save";
+            // Open the "Busy" dialog
+            //
+            this.ShowBusyDialog("Saving Contact ...");
+
+            await this.SaveContact();
+
+            // When the contact is finished being saved, disable the Save button
+            //
+            base.Layout?.ContactMenu?.EnableSaveButton(false);
+
+            // Close the "Busy" dialog
+            //
+            this.DialogService?.Close();
+
+            // Alert and Confirm
+            //
+            this.ShowAlert("Saved");
+
+            // Open the acknowledgment dialog
+            //
+
+            base.StateHasChanged();
         }
 
         #endregion event handlers
 
         #region private
 
-        void SetDialogOptions()
+        DialogOptions GetDialogOptionsFor(string action)
         {
-            this.DialogOptions = new DialogOptions()
+            DialogOptions options = new DialogOptions();
+
+            switch (action.ToLower())
             {
-                //Resizable = true,
-                //Draggable = true,
-                //Resize = OnResize,
-                //Drag = OnDrag,
-                Width   = this.DialogOptions != null ? this.DialogOptions.Width : "700px",
-                Height  = this.DialogOptions != null ? this.DialogOptions.Height : "512px",
-                Left    = this.DialogOptions != null ? this.DialogOptions.Left : null,
-                Top     = this.DialogOptions != null ? this.DialogOptions.Top : null
-            };
+                case "save":
+                    options = new DialogOptions() { ShowTitle = false, Style = "min-height:auto;min-width:auto;width:auto", CloseDialogOnEsc = false };
+                    break;
+                case "save-success":
+                    options = new DialogOptions() { ShowTitle = false, Style = "min-height:auto;min-width:auto;width:auto", CloseDialogOnEsc = false };
+                    break;
+                case "save-failure":
+                    options = new DialogOptions() { ShowTitle = false, Style = "min-height:auto;min-width:auto;width:auto", CloseDialogOnEsc = false };
+                    break;
+            }
+
+            return options;
         }
 
-        async void LaunchEmailEditor(long emailID)
+        void ShowBusyDialog(string? message)
         {
-            this.SetDialogOptions();
+            DialogOptions options = this.GetDialogOptionsFor("save");
 
-            // Get the selected email
-            //
-            Email? email = this.Contact?.Emails?.Where(e=>e.ID == emailID).FirstOrDefault();
+            if (this.DialogService != null)
+            {
+                this.DialogService.OpenAsync("", ds =>
+                {
+                    RenderFragment? dialogContent = builder =>
+                    {
+                        builder.OpenElement(0, "RadzenRow");
+                        builder.AddAttribute(1, "class", "rz-text-align-center rz-p-4");
 
-            Dictionary<string, object?> parms = new Dictionary<string, object?>() { { "Email", email} };
+                        builder.OpenElement(2, "RadzenColumn");
+                        builder.AddAttribute(3, "Size", "12");
 
-            await this.DialogService.OpenAsync<EmailEditorComponent>("Email Editor", parms, this.DialogOptions);
+                        builder.AddContent(4, message);
+
+                        builder.CloseElement();
+                        builder.CloseElement();
+                    };
+
+                    return dialogContent;
+
+                }, options);
+            }
+        }
+
+        void ShowAlert(string message, string? title = null)
+        {
+
+            bool showTitle = (title == null) ? false : true;
+
+            if (this.DialogService != null)
+            {
+                this.DialogService.Alert(message, title, new AlertOptions() { ShowTitle = showTitle, OkButtonText = "Ok", CssClass= "rz-align-items-center rz-p-12" });
+            }
         }
 
         #endregion private

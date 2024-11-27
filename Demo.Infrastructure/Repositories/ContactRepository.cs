@@ -306,6 +306,11 @@ namespace Demo.Infrastructure.Repositories
                     this.UpdatePhoneNumbers(contactEntity, contactModel);
                 }
 
+                if (contactEntity.Person != null && contactModel.Person != null)
+                {
+                    this.UpdateContactPerson(contactEntity, contactModel.Person);
+                }
+
                 try
                 {
                     this._db.SaveChanges();
@@ -371,6 +376,14 @@ namespace Demo.Infrastructure.Repositories
                             this.UpdateEmailInContact(contactEntity, emailModel);
                             break;
                     }
+
+                    // If the Email is marked as the PRIMARY key then set PrimaryEmailID of the
+                    // contact 
+                    //
+                    if (emailModel.IsPrimary)
+                    {
+                        contactEntity.PrimaryEmailID = emailModel.ID;
+                    }
                 }
             }
         }
@@ -400,7 +413,7 @@ namespace Demo.Infrastructure.Repositories
                                                             .FirstOrDefault();
                     if (emailEntity != null)
                     {
-                        contactEntity.Emails?.Remove(emailModel);
+                        contactEntity.Emails?.Remove(emailEntity);
                     }
                 }
             }
@@ -451,6 +464,14 @@ namespace Demo.Infrastructure.Repositories
                             break;
                         case Domain.Enums.EntityActions.Update: 
                             break;
+                    }
+
+                    // If the PhoneNumber is marked as the PRIMARY Phone then set PrimaryPhoneNumberID
+                    // of the contact 
+                    //
+                    if (phoneNumberModel.IsPrimary)
+                    {
+                        contactEntity.PrimaryPhoneNumberID = phoneNumberModel.ID;
                     }
                 }
             }
@@ -512,6 +533,18 @@ namespace Demo.Infrastructure.Repositories
             }
         }
 
+
+        void UpdateContactPerson(Contact contactEntity, Person personModel) 
+        {
+            if (contactEntity.Person != null)
+            {
+                contactEntity.Person.DateOfBirth = personModel.DateOfBirth;
+                contactEntity.Person.FirstName   = personModel.FirstName;
+                contactEntity.Person.LastName    = personModel.LastName;
+                contactEntity.Person.UpdatedDate = this._timestamp;
+                contactEntity.Person.UpdatedBy   = this._updatedBy;
+            }
+        }
         #endregion private
     }
 }

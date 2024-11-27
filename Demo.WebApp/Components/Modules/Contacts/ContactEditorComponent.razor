@@ -2,6 +2,7 @@
 
 @if (this.Visible)
 {
+
     @if(this.Contact != null)
     {
         <RadzenStack Orientation="@Orientation.Horizontal" class="unq-contact-editor-header rz-pb-8">
@@ -11,6 +12,10 @@
             <div class="unq-contact-editor-contact-name">@($"{this.Contact.Person?.LastName}, {this.Contact.Person?.FirstName}")</div>
         </RadzenStack>
 
+        @if (this.ShowErrorMessage)
+        {
+            <div>@this.ErrorMessage</div>
+        }
         <RadzenTemplateForm Data="@Contact">
             <RadzenRow Gap="1rem">
                 <RadzenColumn Size="6">
@@ -40,7 +45,7 @@
                                     <RadzenLabel Text="Date Of Birth"/>
                                 </RadzenColumn>
                                 <RadzenColumn Size="8">
-                                    <RadzenDatePicker @bind-Value="@this.Contact.Person.DateOfBirth" Style="width:100%"></RadzenDatePicker>
+                                    <RadzenDatePicker @bind-Value="@this.Contact.Person.DateOfBirth" DateFormat="MM/dd/yyyy" Style="width:100%"></RadzenDatePicker>
                                 </RadzenColumn>
                             </RadzenRow>
                         </RadzenStack>
