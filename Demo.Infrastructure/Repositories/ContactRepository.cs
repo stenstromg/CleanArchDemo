@@ -10,25 +10,19 @@ using System.Linq.Expressions;
 
 namespace Demo.Infrastructure.Repositories
 {
-    public class ContactRepository : IContactRepository
+    public class ContactRepository(DemoDbContext ctx) : IContactRepository
     {
         #region properties
 
-        DemoDbContext _db { get; set; }
+        DemoDbContext _db { get; set; } = ctx;
 
-        DateTime _timestamp { get; set; }
+        DateTime _timestamp { get; set; } = DateTime.UtcNow;
 
-        string _updatedBy { get; set; }
+        string _updatedBy { get; set; } = "SYSTEM";
 
         #endregion properties
 
         #region ctor
-
-        public ContactRepository(DemoDbContext ctx)
-        {
-            this._db = ctx;
-        }
-
         #endregion ctor
 
         #region public
@@ -41,7 +35,70 @@ namespace Demo.Infrastructure.Repositories
             return contact;
         }
 
-        public Contact CreateContactForLogin(UserLoginRegistrationModel model, string author = "AUTO")
+        public bool DeleteContact(long id)
+        {
+            Contact? contact = this._db.Contacts.Where(e => e.ID == id)
+                                         .Include(c => c.Emails)
+                                         .Include(c => c.PhoneNumbers)
+                                         .Include(c => c.Person)
+                                         .FirstOrDefault();
+
+            if (contact != null)
+            {
+                try
+                {
+                    this._db.Contacts.Remove(contact);
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    return false;
+                }
+            }
+
+            return false;
+        }
+
+        public Contact? GetContactByID(long id)
+        {
+            Contact? ret = this._db.Contacts.Where(e=>e.ID == id)
+                                         .Include(c=>c.Emails)
+                                         .Include(c=>c.PhoneNumbers)
+                                         .Include(c=>c.Person)
+                                         .FirstOrDefault();
+
+            // Set the primary email flag
+            //
+            Email? primaryEmail = ret.Emails.Where(e=>e.ID == ret.PrimaryEmailID).FirstOrDefault();
+            if (primaryEmail != null)
+            {
+                primaryEmail.IsPrimary = true;
+            }
+
+            return ret;
+        }
+
+        public List<Contact>? GetContacts(List<Expression<Func<Contact, bool>>>? filters = null)
+        {
+            var query = this._db.Contacts.Include(c => c.Emails)
+                                         .Include(c => c.PhoneNumbers)
+                                         .Include(c => c.Person)
+                                         .AsQueryable();
+
+            if (filters != null)
+            {
+                foreach (var filter in filters)
+                {
+                    query = query.Where(filter);
+                }
+            }
+
+            List<Contact> ret = query.ToList();
+
+            return ret;
+        }
+
+        public Contact RegisterUser(UserLoginRegistrationModel model, string author = "AUTO")
         {
             this._timestamp  = DateTime.UtcNow;
             this._updatedBy  = author;
@@ -64,7 +121,7 @@ namespace Demo.Infrastructure.Repositories
                 {
                     // Check to make sure that the Username is unique
                     //
-                    UserLogin userLogin = this._db.UserLogins.Where(e => e.Username.ToLower() == model.Username.ToLower()).FirstOrDefault();
+                    UserLogin? userLogin = this._db.UserLogins.Where(e => e.Username.ToLower() == model.Username.ToLower()).FirstOrDefault();
 
                     if (userLogin != null)
                     {
@@ -138,60 +195,6 @@ namespace Demo.Infrastructure.Repositories
             }
 
             return contact;
-        }
-
-        public bool DeleteContact(long id)
-        {
-            Contact? contact = this._db.Contacts.Where(e => e.ID == id)
-                                         .Include(c => c.Emails)
-                                         .Include(c => c.PhoneNumbers)
-                                         .Include(c => c.Person)
-                                         .FirstOrDefault();
-
-            if (contact != null)
-            {
-                try
-                {
-                    this._db.Contacts.Remove(contact);
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    return false;
-                }
-            }
-
-            return false;
-        }
-
-        public Contact? GetContactByID(long id)
-        {
-            Contact? ret = this._db.Contacts.Where(e=>e.ID == id)
-                                         .Include(c=>c.Emails)
-                                         .Include(c=>c.PhoneNumbers)
-                                         .Include(c=>c.Person)
-                                         .FirstOrDefault();
-            return ret;
-        }
-
-        public List<Contact>? GetContacts(List<Expression<Func<Contact, bool>>>? filters = null)
-        {
-            var query = this._db.Contacts.Include(c => c.Emails)
-                                         .Include(c => c.PhoneNumbers)
-                                         .Include(c => c.Person)
-                                         .AsQueryable();
-
-            if (filters != null)
-            {
-                foreach (var filter in filters)
-                {
-                    query = query.Where(filter);
-                }
-            }
-
-            List<Contact> ret = query.ToList();
-
-            return ret;
         }
 
         public bool SaveContact(Contact contactModel, String updatedBy)

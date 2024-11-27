@@ -1,7 +1,11 @@
-﻿using Demo.App.Models;
+﻿using Demo.App.Enums;
+using Demo.App.Exceptions;
+using Demo.App.Models;
+using Demo.App.Models.DTO;
 using Demo.App.Services;
 using Demo.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -56,11 +60,41 @@ namespace Demo.PresentationAPI.Controllers
         //}
 
         [HttpPost, ActionName("Login")]
-        [Route("/api/Login")]
+        [Route("/api/User/Login")]
         public ActionResult<UserLogin?> Login([FromBody] CredentialsModel creds)
         {
-            UserLogin? ret = this._service.GetUserLogin(creds.Password, creds.Username);
-            return (ret == null) ? Unauthorized(ret) : Ok(ret);
+            try
+            {
+                UserLogin? ret = this._service.GetUserLogin(creds.Password, creds.Username);
+                return Ok(ret);
+            }
+            catch (InvalidCredentialsException credX)
+            {
+                return StatusCode((int)CustomHttpStatusCodes.InvalidCredentials, new { Message = credX.Message });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost, ActionName("Register")]
+        [Route("/api/User/Register")]
+        public ActionResult<Contact> Register([FromBody] UserLoginRegistrationModel dataModel)
+        {
+            try
+            {
+                Contact ret = this._service.RegisterUser(dataModel, "SYSTEM");
+                return Ok(ret);
+            }
+            catch (DuplicateNameException dupeX)
+            {
+                return StatusCode((int)CustomHttpStatusCodes.DuplicateUserName, new { Message = dupeX.Message });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
 

@@ -1,0 +1,8 @@
+﻿.unq-contact-list-item {
+  padding: 1rem;
+  margin-right: 1rem;
+}
+.unq-contact-list-item:hover {
+  background-color: var(--rz-base-400);
+  cursor: pointer;
+}

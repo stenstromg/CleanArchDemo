@@ -1,8 +1,10 @@
 ﻿using Demo.App.Interfaces;
+using Demo.App.Interfaces.WebAPI;
 using Demo.App.Services;
 using Demo.WebApp.Classes.Services;
 using Demo.WebApp.Components.Layout;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 
 namespace Demo.WebApp.Classes
 {
@@ -12,7 +14,7 @@ namespace Demo.WebApp.Classes
         #region parameters
 
         [CascadingParameter(Name = "Layout")]
-        MainLayout? Layout { get; set; }
+        protected MainLayout? Layout { get; set; }
 
         #endregion parameters
 
@@ -20,13 +22,16 @@ namespace Demo.WebApp.Classes
         #region inject
 
         [Inject]
-        public IWebApiRepoService? ApiRepositorySvc { get; set; }
+        IJSRuntime? JSRuntime { get; set; }
 
         [Inject]
         public NavigationManager? NavManager { get; set; }
 
         [Inject]
-        public IApplicationSessionService? SessionService { get; set; }
+        public IApplicationSessionService? AppSession { get; set; }
+
+        [Inject]
+        public ApplicationConfigurationService? AppConfigService { get; set; }
 
         #endregion inject
     }

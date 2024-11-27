@@ -1,7 +1,10 @@
 using Demo.App.Interfaces;
+using Demo.App.Interfaces.WebAPI;
 using Demo.App.Services;
+using Demo.App.Services.WebAPI;
 using Demo.Infrastructure.Data;
 using Demo.Infrastructure.Repositories;
+using Demo.Infrastructure.Repositories.WebAPI;
 using Demo.Infrastructure.Services;
 using Demo.WebApp.Classes.Services;
 using Demo.WebApp.Components;
@@ -42,22 +45,15 @@ namespace Demo.WebApp
 
             #region register custom services
 
+            builder.Services.AddScoped<ApplicationConfigurationService>( arg => new ApplicationConfigurationService(configuration));
             builder.Services.AddScoped<IApplicationSessionService, ApplicationSessionService>();
 
-            //builder.Services.AddScoped<IAccountService, AccountService>();
-            //builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+            builder.Services.AddTransient<IContactApiRepository, ContactApiRepository>();
+            builder.Services.AddTransient<IContactApiService, ContactApiService>();
+            builder.Services.AddTransient<IUserApiRepository, UserApiRepository>();
+            builder.Services.AddTransient<IUserApiService, UserApiService>();
 
-            builder.Services.AddScoped<IUserLoginService, UserLoginService>();
-            builder.Services.AddScoped<IUserLoginRepository, UserLoginRepository>();
-
-            builder.Services.AddScoped<IAuthenticatorService, AuthenticatorService>();
-
-            builder.Services.AddScoped<IPersonRepository, PersonRepository>();
-            builder.Services.AddScoped<IPersonService, PersonService>();
-
-            builder.Services.AddTransient<IPresentationAPIService, PresentationAPIService>();
-            builder.Services.AddTransient<IWebApiRepoService, WebApiRepoService>();
-            builder.Services.AddTransient<IWebAPIRepository>(provider => new WebAPIRepository(configuration));
+            builder.Services.AddTransient<IWebAPIUtilities>(provider => new WebAPIUtilities(configuration));
 
             #endregion register custom services
 

@@ -22,14 +22,6 @@ namespace Demo.App.Interfaces
         Contact CreateContact(Contact contact, string updatedBy = "AUTO");
 
         /// <summary>
-        /// Creates a NEW contact record from the Registration form data
-        /// </summary>
-        /// <param name="model"></param>
-        /// <param name="author"></param>
-        /// <returns></returns>
-        Contact CreateContactForLogin(UserLoginRegistrationModel model, string author = "AUTO");
-
-        /// <summary>
         /// Permanently deletes the COntact record associated with the <paramref name="id"/> argument.
         /// </summary>
         /// <param name="id"></param>
@@ -37,7 +29,7 @@ namespace Demo.App.Interfaces
         bool DeleteContact(long id);
 
         /// <summary>
-        /// Returns the existing Contact associted with the <paramref name="id"/> argument.
+        /// Returns the existing Contact associated with the <paramref name="id"/> argument.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -49,6 +41,14 @@ namespace Demo.App.Interfaces
         /// <param name="filters"></param>
         /// <returns></returns>
         List<Contact>? GetContacts(List<Expression<Func<Contact, bool>>>? filters = null);
+
+        /// <summary>
+        /// Creates a NEW contact record from the RegistrationModel.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="author"></param>
+        /// <returns>Returns the Contact associated with the newly created User.</returns>
+        Contact RegisterUser(UserLoginRegistrationModel model, string author = "AUTO");
 
         /// <summary>
         /// Saves an existing Contact,  including any associated Person, Email, Phone records

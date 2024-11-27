@@ -1,4 +1,5 @@
 ﻿using Demo.App.Models;
+using Demo.App.Exceptions;
 using Demo.Domain.Models;
 using System.Linq.Expressions;
 
@@ -28,6 +29,7 @@ namespace Demo.App.Interfaces
         /// <param name="password"></param>
         /// <param name="loginId"></param>
         /// <returns></returns>
+        /// <exception cref="InvalidCredentialsException"></exception>
         UserLogin? GetUserLogin(string password, string loginId);
 
         /// <summary>
@@ -59,5 +61,14 @@ namespace Demo.App.Interfaces
         /// <param name="username"></param>
         /// <returns></returns>
         bool IsUniqueUsername(string username);
+
+        /// <summary>
+        ///  Creates a new UserLogin record, as well as a required COntact record plus additional 
+        ///  Email and Person objects
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="author"></param>
+        /// <returns>The Contact record created and associated with the new UserLogin</returns>
+        Contact RegisterUser(UserLoginRegistrationModel model, string author = "AUTO");
     }
 }

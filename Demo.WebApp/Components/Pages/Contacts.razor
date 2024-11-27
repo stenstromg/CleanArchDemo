@@ -2,6 +2,14 @@
 @page "/Contacts"
 @rendermode InteractiveServer
 
-<h3>Contacts</h3>
 
-<ContactListComponent></ContactListComponent>
+<RadzenSplitter Style="height: calc(100vh - 6.4rem);">
+    <RadzenSplitterPane Size="30%" Min="10px" Max="70%">
+        <ContactListComponent OnItemClick="ContactList_OnItemSelect"></ContactListComponent>
+    </RadzenSplitterPane>
+    <RadzenSplitterPane>
+        <div class="rz-p-4">
+            <ContactEditorComponent Contact="@SelectedContact" Visible="@ContactEditorIsVisible"></ContactEditorComponent>
+        </div>
+    </RadzenSplitterPane>
+</RadzenSplitter>

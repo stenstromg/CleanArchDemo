@@ -5,6 +5,8 @@
 .unq-main-layout .unq-menu-content-container .unq-menu-content-left {
   display: flex;
   align-items: center;
+  justify-content: flex-start;
+  width: 100%;
 }
 .unq-main-layout .unq-menu-content-container .unq-menu-content-left .unq-main-layout-label {
   width: calc((var(--rz-sidebar-width) - var(--rz-sidebar-toggle-icon-width) - var(--rz-sidebar-toggle-padding)) - var(--rz-sidebar-toggle-padding));

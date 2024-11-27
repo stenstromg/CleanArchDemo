@@ -1,0 +1,58 @@
+﻿@inherits UnqComponentBase
+
+@if (this.Visible)
+{
+    @if(this.Contact != null)
+    {
+        <RadzenStack Orientation="@Orientation.Horizontal" class="unq-contact-editor-header rz-pb-8">
+            <div class="unq-profile-icon unq-profile-icon-large">
+                <span>GS</span>
+            </div>
+            <div class="unq-contact-editor-contact-name">@($"{this.Contact.Person?.LastName}, {this.Contact.Person?.FirstName}")</div>
+        </RadzenStack>
+
+        <RadzenTemplateForm Data="@Contact">
+            <RadzenRow Gap="1rem">
+                <RadzenColumn Size="6">
+                    <RadzenFieldset Text="Personal Info">
+
+                        <RadzenStack Orientation="@Orientation.Vertical" Gap="1rem">
+                            <RadzenRow AlignItems="@AlignItems.Center" >
+                                <RadzenColumn Size="4">
+                                    <RadzenLabel Text="First Name" Component="@this.Contact.Person.FirstName"/>
+                                </RadzenColumn>
+                                <RadzenColumn Size="8">
+                                    <RadzenTextBox @bind-Value="@this.Contact.Person.FirstName" Style="width:100%"></RadzenTextBox>
+                                </RadzenColumn>
+                            </RadzenRow>
+
+                            <RadzenRow AlignItems="@AlignItems.Center">
+                                <RadzenColumn Size="4">
+                                    <RadzenLabel Text="Last Name" Component="@this.Contact.Person.LastName" />
+                                </RadzenColumn>
+                                <RadzenColumn Size="8">
+                                    <RadzenTextBox @bind-Value="@this.Contact.Person.LastName" Style="width:100%"></RadzenTextBox>
+                                </RadzenColumn>
+                            </RadzenRow>
+
+                            <RadzenRow AlignItems="@AlignItems.Center">
+                                <RadzenColumn Size="4">
+                                    <RadzenLabel Text="Date Of Birth"/>
+                                </RadzenColumn>
+                                <RadzenColumn Size="8">
+                                    <RadzenDatePicker @bind-Value="@this.Contact.Person.DateOfBirth" Style="width:100%"></RadzenDatePicker>
+                                </RadzenColumn>
+                            </RadzenRow>
+                        </RadzenStack>
+
+                    </RadzenFieldset>
+                </RadzenColumn>
+                <RadzenColumn Size="6">
+                    <RadzenFieldset Text="Email">
+                        <EmailEditorComponent Contact="@Contact" OnEmailHasChanged="EmailEditor_OnChange"></EmailEditorComponent>
+                    </RadzenFieldset>
+                </RadzenColumn>
+            </RadzenRow>
+        </RadzenTemplateForm>
+    }
+}

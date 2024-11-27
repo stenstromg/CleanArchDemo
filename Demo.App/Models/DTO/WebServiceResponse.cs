@@ -1,22 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Net;
 
 namespace Demo.App.Models.DTO
 {
+    /// <summary>
+    /// Carries the Response delivered by a WebAPI Request.
+    /// </summary>
     public class WebServiceResponse
     {
         #region properties
 
-
+        /// <summary>
+        /// Get/Sets an error or other message associated with the response
+        /// </summary>
         public string?  Message { get; set; }
 
+        /// <summary>
+        /// Gets/Sets the return value of the Web Service request.
+        /// </summary>
         public object? Payload { get; set; }
 
+        /// <summary>
+        /// Gets/Sets the status of the Web Service response.
+        /// </summary>
         public HttpStatusCode StatusCode { get; set; }
 
         #endregion properties

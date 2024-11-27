@@ -1,4 +1,7 @@
-﻿.rz-button-md {
+﻿.rz-body {
+  padding: 0 !important;
+}
+.rz-button-md {
   text-transform: capitalize !important;
 }
 .page .rz-form-field-content .rz-form-field-label {

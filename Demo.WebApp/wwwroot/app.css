@@ -1,12 +1,15 @@
+@import url("./css/Fonts/Typography.css");
 @import url("./css/Themes/RadzenTheme-FluentDark.css");
 @import url("./css/Themes/ThemeDark.css");
-@import url("./css/Component/LoginComponent.css");
 @import url("./css/Layout/LayoutStyles.css");
+@import url("./css/Component/LoginComponent.css");
+@import url("./css/Component/ContactListComponent.css");
+@import url("./css/Component/ContactEditorComponent.css");
 
 html, body {
-    font-family: "Gabarito", sans-serif !important;
+    font-family: "Roboto", sans-serif !important;
     font-optical-sizing: auto !important;
-    font-weight: 500 !important;
+    font-weight: 300 !important;
     font-style: normal !important;
     font-size: 15px !important;
 }
@@ -17,6 +20,11 @@ html, body {
     height: 100vh;
 
 }
+
+h1, h2, h3, h4 {
+    font-family: "Gabarito", sans-serif;
+}
+
 
 /*
 a, .btn-link {

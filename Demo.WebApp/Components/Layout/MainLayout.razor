@@ -9,7 +9,7 @@
                 <div class="unq-menu-content-left">
                     <RadzenSidebarToggle Click="@(()=>{ this.Toggle_OnClick(); })" />
                     <RadzenLabel class="unq-main-layout-label">My Tools</RadzenLabel>
-                    <ContactMenuComponent Visible="@ContactMenuIsVisible"></ContactMenuComponent>
+                    <ContactMenuComponent Visible="@ContactMenuIsVisible" @ref="ContactMenu"></ContactMenuComponent>
                 </div>
                 <div class="unq-menu-content-right">
                     HHJHJH
@@ -29,9 +29,7 @@
 
     <RadzenBody>
         <CascadingValue Name="Layout" TValue="MainLayout" Value="this">
-            <div class="rz-p-4">
-                @Body
-            </div>
+            @Body
         </CascadingValue>
     </RadzenBody>
 

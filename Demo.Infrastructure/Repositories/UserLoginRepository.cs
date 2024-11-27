@@ -1,31 +1,128 @@
-﻿using Demo.App.Interfaces;
+﻿using Demo.App.Exceptions;
+using Demo.App.Interfaces;
 using Demo.App.Models;
 using Demo.Domain.Models;
 using Demo.Domain.Security;
 using Demo.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
+using System.Data;
 using System.Linq.Expressions;
 
 namespace Demo.Infrastructure.Repositories
 {
-    public class UserLoginRepository : IUserLoginRepository
+    public class UserLoginRepository(DemoDbContext ctx) : IUserLoginRepository
     {
         #region properties
 
-        DemoDbContext? _db { get; set; }
+        DemoDbContext? _db { get; set; } = ctx;
 
         #endregion properties
 
         #region ctor
-
-        public UserLoginRepository(DemoDbContext ctx)
-        {
-            this._db = ctx;
-        }
-
         #endregion ctor
 
         #region public
+
+        public Contact RegisterUser(UserLoginRegistrationModel model, string author = "AUTO")
+        {
+            DateTime timestamp = DateTime.UtcNow;
+            Contact? contact   = null;
+
+            var errMsg = model.Validate();
+
+            if (errMsg != null && errMsg.Count() > 0)
+            {
+                throw new InvalidDataException(errMsg.FirstOrDefault());
+            }
+
+            if (this._db != null)
+            {
+                using (IDbContextTransaction transaction = this._db.Database.BeginTransaction())
+                {
+                    // Prepare the model contents to be saved
+                    //
+                    model.PrepareForSave();
+
+                    try
+                    {
+                        // Check to make sure that the Username is unique
+                        //                        
+                        UserLogin? userLogin = this._db.UserLogins?.Where(e => e.Username.ToLower() == model.Username.ToLower()).FirstOrDefault();
+
+                        if (userLogin != null)
+                        {
+                            throw new DuplicateNameException("The username is already in use");
+                        }
+
+                        // Save associated PhoneNumber in order to get an ID. 
+                        //
+                        if (model.PhoneNumber != null)
+                        {
+                            model.PhoneNumber.UpdatedBy = model.PhoneNumber.CreatedBy = author;
+                            model.PhoneNumber.UpdatedDate = model.PhoneNumber.CreatedDate = timestamp;
+                            this._db.PhoneNumbers.Add(model.PhoneNumber);
+                        }
+
+                        // Save associated Email in order to get an ID. 
+                        //
+                        if (model.Email != null)
+                        {
+                            model.Email.UpdatedBy = model.Email.CreatedBy = author;
+                            model.Email.UpdatedDate = model.Email.CreatedDate = timestamp;
+                            this._db.Emails.Add(model.Email);
+                        }
+
+                        // Save associated Person in order to get an ID. 
+                        //
+                        model.Person.CreatedBy = model.Person.UpdatedBy = author;
+                        model.Person.CreatedDate = model.Person.UpdatedDate = timestamp;
+                        this._db.People.Add(model.Person);
+
+                        // Save associated UserLogin in order to get an ID. 
+                        //
+                        model.UserLogin.CreatedBy = model.UserLogin.UpdatedBy = author;
+                        model.UserLogin.CreatedDate = model.UserLogin.UpdatedDate = timestamp;
+                        model.UserLogin.Person = model.Person;
+                        model.UserLogin.Email = model.Email;
+                        this._db.UserLogins.Add(model.UserLogin);
+
+                        this._db.SaveChanges();
+
+                        contact = new Contact()
+                        {
+                            DbAction = Domain.Enums.EntityActions.Add,
+                            PrimaryEmailID = model.Email?.ID,
+                            PrimaryPhoneNumberID = model.PhoneNumber?.ID,
+                            Emails = (model.Email == null) ? new List<Email>() : new List<Email>() { model.Email },
+                            PhoneNumbers = (model.PhoneNumber == null) ? new List<PhoneNumber>() : new List<PhoneNumber>() { model.PhoneNumber },
+                            Person = model.Person,
+                            UserProfile = model.UserLogin,
+                            UserID = model.UserLogin.ID,
+                            CreatedBy = author,
+                            CreatedDate = timestamp,
+                            UpdatedDate = timestamp,
+                            UpdatedBy = author,
+                        };
+
+                        this._db.Contacts.Add(contact);
+                        this._db.SaveChanges();
+                    }
+                    catch (DuplicateNameException dupeX)
+                    {
+                        throw new DuplicateNameException(dupeX.Message);
+                    }
+                    catch (Exception ex)
+                    {
+                        while (ex.InnerException != null) ex = ex.InnerException;
+                        throw new DbUpdateException($"The Contact for Login failed to save : {ex.Message}");
+                    }
+
+                    transaction.Commit();
+                }
+            }
+            return contact;
+        }
 
         public UserLogin CreateUserLogin(UserLogin user)
         {
@@ -81,21 +178,21 @@ namespace Demo.Infrastructure.Repositories
             // hash the password 
             //
             string hashPWD = HashService.ComputeMD5Hash(password);
-
-            UserLogin? userLogin = this._db.UserLogins.Where(e => e.Password == hashPWD && e.Username.ToLower() == username.ToLower())
-                                                      .Include(user => user.Person)
-                                                      .Include(user => user.Email)
-                                                      .FirstOrDefault();
-
+                UserLogin? userLogin = this._db?.UserLogins.Where(e => e.Password == hashPWD && e.Username.ToLower() == username.ToLower())
+                                                          .Include(user => user.Person)
+                                                          .Include(user => user.Email)
+                                                          .FirstOrDefault();
             if (userLogin != null)
             {
-                // Update the login
-                //
                 userLogin.LastLoginDate = DateTime.UtcNow;
-                this._db.SaveChanges();
+                this._db?.SaveChanges();
+                return userLogin;
+            }
+            else
+            {
+                throw new InvalidCredentialsException("Username/Password not found");
             }
 
-            return userLogin;
         }
 
         public UserLogin? GetUserLoginByID(long loginId)

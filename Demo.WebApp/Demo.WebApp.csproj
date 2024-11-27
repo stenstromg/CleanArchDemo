@@ -33,8 +33,4 @@
     <ProjectReference Include="..\Demo.Infrastructure\Demo.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="wwwroot\css\Fonts\" />
-  </ItemGroup>
-
 </Project>

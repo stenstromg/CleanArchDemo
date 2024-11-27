@@ -1,14 +1,8 @@
 ﻿using Demo.App.Models.DTO;
-using Demo.Domain.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Demo.App.Interfaces
+namespace Demo.App.Interfaces.WebAPI
 {
-    public interface IWebAPIRepository
+    public interface IWebAPIUtilities
     {
         /// <summary>
         ///  Returns the data retreived from the service found at the appsettings path identified 
@@ -19,7 +13,8 @@ namespace Demo.App.Interfaces
         ///  Found in the WebServiceURLs section of the appsettings.json
         /// </param>
         /// <returns></returns>
-        Task<T?> GetData<T>(string apiKey) where T : class;
+        //Task<T?> GetData<T>(string apiKey) where T : class;
+        Task<WebServiceResponse> Get<T>(string apiKey);
 
         /// <summary>
         /// Returns the UserLogin object associated with the <paramref name="password"/> and 
@@ -41,7 +36,8 @@ namespace Demo.App.Interfaces
         ///  The data to post to the URL identified by the <paramref name="apiKey"/> argument
         ///  </param>
         /// <returns></returns>
-        //Task<RetType?> PostData<RetType,ArgType>(string apiKey, ArgType postData) where RetType : class;
-        Task<WebServiceResponse> PostData<RetType, ArgType>(string apiKey, ArgType postData) where RetType : class;
+        //Task<WebServiceResponse> PostData<RetType, ArgType>(string apiKey, ArgType postData) where RetType : class;
+
+        Task<WebServiceResponse> PostData2<RetType, ArgType>(string apiKey, ArgType postData) where RetType : class;
     }
 }

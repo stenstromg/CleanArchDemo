@@ -1,4 +1,5 @@
 ﻿
+using Demo.WebApp.Components.Modules.Contacts;
 using Microsoft.AspNetCore.Components;
 
 namespace Demo.WebApp.Components.Layout
@@ -19,6 +20,8 @@ namespace Demo.WebApp.Components.Layout
         #endregion data
 
         #region properties
+
+        public ContactMenuComponent? ContactMenu { get; set; }
 
         bool ContactMenuIsVisible { get; set; } = false;
 

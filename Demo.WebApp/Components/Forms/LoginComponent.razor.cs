@@ -1,6 +1,8 @@
-﻿using Demo.App.Models;
+﻿using Demo.App.Exceptions;
+using Demo.App.Models;
 using Demo.App.Models.DTO;
 using Demo.App.Services;
+using Demo.App.Services.WebAPI;
 using Demo.App.Utilities;
 using Demo.Domain.Models;
 using Demo.WebApp.Classes;
@@ -33,6 +35,14 @@ namespace Demo.WebApp.Components.Forms
 
         #endregion parameters
 
+
+        #region inject
+
+        [Inject]
+        public IUserApiService? UserApiService { get; set; }
+
+        #endregion inject
+
         #region data
 
         /// <summary>
@@ -43,38 +53,25 @@ namespace Demo.WebApp.Components.Forms
         /// <param name="password"></param>
         /// <returns></returns>
         /// <exception cref="NullReferenceException"></exception>
-        async Task<UserLogin?> PostLoginRequest(string username, string password)
+        async Task<UserLogin?> Login(string username, string password)
         {
-            if (this.ApiRepositorySvc != null)
+            // populate the crdentials object
+            //
+            CredentialsModel credentialsModel = new CredentialsModel() { Password = password, Username = username };
+
+            // Log the user in.
+            //
+            if (this.UserApiService != null)
             {
-                CredentialsModel credentialsModel = new CredentialsModel() { Username = username, Password = password };
-                //UserLogin? userLogin = await this.ApiRepositorySvc.PostData<UserLogin, CredentialsModel>("PresentationAPI:Login", credentialsModel);
-                WebServiceResponse? response = await this.ApiRepositorySvc.PostData2<UserLogin, CredentialsModel>("PresentationAPI:Login", credentialsModel);
-
-                UserLogin? userLogin  = null;
-
-                if (response != null)
-                {
-                    switch (response.StatusCode)
-                    {
-                        case System.Net.HttpStatusCode.OK:
-                            userLogin = (UserLogin)response.Payload;
-                            break;
-                        case System.Net.HttpStatusCode.Unauthorized:
-                            this.ErrorMessage = "Invalid Username/Password";
-                            this.ShowErrorMessage = true;
-                            break;
-                    }
-                }
-
-                return userLogin;
+                string? serviceURL = base.AppConfigService?.GetWebServiceFunctionURL("Login");
+                UserLogin? user = await this.UserApiService.Login(serviceURL, credentialsModel);
+                return user;
             }
             else
             {
-                throw new NullReferenceException("CreateContact key for PresentationAPI node was not found in appsettings.");
+                throw new NullReferenceException("WebAPI Service not available.");
             }
         }
-
 
         #endregion data
 
@@ -87,13 +84,18 @@ namespace Demo.WebApp.Components.Forms
         {
             if (!StringUtilities.IsUndefined(this.Username) && !StringUtilities.IsUndefined(this.Password))
             {
-                UserLogin? userLogin = await this.PostLoginRequest(this.Username, this.Password);
-
-                if (userLogin != null)
+                try
                 {
+                    UserLogin? userLogin = await this.Login(this.Username, this.Password);
                     await OnLoginSuccess.InvokeAsync(userLogin);
+
                 }
-                else
+                catch (InvalidCredentialsException credX)
+                {
+                    this.ErrorMessage = credX.Message;
+                    this.ShowErrorMessage = true;
+                }
+                finally
                 {
                     base.StateHasChanged();
                 }

@@ -42,6 +42,7 @@ namespace Demo.Domain.Models
         public long? PrimaryEmailID { get; set; }
 
         [NotMapped]
+        [JsonIgnore]
         public Email? PrimaryEmail { get { return this.Emails?.FirstOrDefault(e => e.ID == this.PrimaryEmailID); } }
 
         /// <summary>
@@ -83,12 +84,11 @@ namespace Demo.Domain.Models
         /// phoneNumbers use AddPhoneNumbers and RemovePhoneNumbers methods.
         /// </summary>
         [JsonPropertyName("phoneNumbers")]
-        public virtual ICollection<PhoneNumber> PhoneNumbers { get; set; } = new HashSet<PhoneNumber>();   
+        public virtual ICollection<PhoneNumber> PhoneNumbers { get; set; } = new HashSet<PhoneNumber>();
 
         #endregion navigation properties
 
         #region public
-
         //public void AddEmail(Email email)
         //{
         //    if (this.Emails == null)

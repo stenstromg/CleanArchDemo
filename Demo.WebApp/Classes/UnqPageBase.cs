@@ -1,5 +1,7 @@
 ﻿using Demo.App.Interfaces;
+using Demo.App.Interfaces.WebAPI;
 using Demo.App.Services;
+using Demo.App.Services.WebAPI;
 using Demo.WebApp.Classes.Services;
 using Demo.WebApp.Components.Layout;
 using Microsoft.AspNetCore.Components;
@@ -20,9 +22,6 @@ namespace Demo.WebApp.Classes
         #region inject
 
         [Inject]
-        public IWebApiRepoService? ApiRepositorySvc { get; set; }
-
-        [Inject]
         public NavigationManager? NavManager { get; set; }
 
         [Inject]
@@ -30,6 +29,9 @@ namespace Demo.WebApp.Classes
 
         [Inject]
         public ThemeService? ThemeService{ get; set; }
+
+        [Inject]
+        public ApplicationConfigurationService? AppService{ get; set; }
 
         #endregion inject
 

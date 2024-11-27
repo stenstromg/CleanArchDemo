@@ -50,5 +50,13 @@
   {
     "outputFile": "wwwroot/css/Layout/LayoutStyles.css",
     "inputFile": "wwwroot/css/Layout/LayoutStyles.less"
+  },
+  {
+    "outputFile": "wwwroot/css/Component/ContactListComponent.css",
+    "inputFile": "wwwroot/css/Component/ContactListComponent.less"
+  },
+  {
+    "outputFile": "wwwroot/css/Component/ContactEditorComponent.css",
+    "inputFile": "wwwroot/css/Component/ContactEditorComponent.less"
   }
 ]

@@ -1,6 +1,7 @@
-﻿using Demo.App.Interfaces;
+﻿using Demo.App.Interfaces.WebAPI;
 using Demo.App.Models;
 using Demo.App.Models.DTO;
+using Demo.App.Services.WebAPI;
 using Demo.Domain.Models;
 using Demo.WebApp.Classes;
 using Demo.WebApp.Classes.Utilities;
@@ -34,7 +35,7 @@ namespace Demo.WebApp.Components.Forms
         #region inject
 
         [Inject]
-        public IWebAPIRepository? ApiService { get; set; }
+        public IUserApiService? UserApiService { get; set; }
 
         #endregion inject
 
@@ -45,9 +46,9 @@ namespace Demo.WebApp.Components.Forms
         /// </summary>
         /// <param name="contact"></param>
         /// <returns></returns>
-        async Task<Contact?> RegisterNewUser(UserLoginRegistrationModel formData)
+        async Task<Contact?> Register(UserLoginRegistrationModel formData)
         {
-            // Prepare and validate the form data
+            // Validate the form data
             //
             List<string> validationErrors = formData.Validate().ToList();
             if (validationErrors.Count > 0)
@@ -57,42 +58,18 @@ namespace Demo.WebApp.Components.Forms
                 return null;
             }
 
-            // If the form passed validation, prepare the form contents to be saved.
+            // If valid, then use the APIService to Register the data
             //
-            //formData.PrepareForSave();
-
-            if (this.ApiRepositorySvc != null)
+            if (this.UserApiService != null && base.AppConfigService != null)
             {
-                //Contact? retValue = await this.ApiRepositorySvc.PostData<Contact, UserLoginRegistrationModel>("PresentationAPI:Register", formData);
-                //return retValue;
-             
-                WebServiceResponse? response = await this.ApiRepositorySvc.PostData2<Contact, UserLoginRegistrationModel>("PresentationAPI:Register", formData);
+                string? serviceURL = base.AppConfigService.GetWebServiceFunctionURL("Register");
 
-                Contact? ret = null;
-
-                if (response != null)
-                {
-                    switch (response.StatusCode)
-                    {
-                        case System.Net.HttpStatusCode.OK:
-                            ret = (Contact)response.Payload;
-                            break;
-                        case (System.Net.HttpStatusCode)601:
-                            this.ErrorMessage = "Duplicate username";
-                            this.ShowErrorMessage = true;
-                            break;
-                        default:
-                            this.ErrorMessage = $"Api Request failed : {response.Message}";
-                            this.ShowErrorMessage = true;
-                            break;
-                    }
-                }
-
+                Contact? ret = await this.UserApiService.Register(serviceURL, formData);
                 return ret;
             }
             else
             {
-                throw new NullReferenceException("ApiRepositoryService not available.");
+                throw new NullReferenceException("WebAPI Service not available.");
             }
         }
 
@@ -121,7 +98,8 @@ namespace Demo.WebApp.Components.Forms
 
         async void form_OnSubmit()
         {
-            Contact? contact = await this.RegisterNewUser(this.FormData);
+            Contact? contact = await this.Register(this.FormData);
+
             if (contact != null)
             {
                 await this.OnRegisterSuccess.InvokeAsync(contact);

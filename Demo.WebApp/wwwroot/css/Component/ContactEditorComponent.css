@@ -1,0 +1,7 @@
+﻿.unq-contact-editor-header {
+  display: flex;
+  align-items: center;
+}
+.unq-contact-editor-header .unq-contact-editor-contact-name {
+  font-size: 3rem;
+}

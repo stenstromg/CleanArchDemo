@@ -9,7 +9,15 @@
             <RadzenSplitButtonItem Text="New Contact List" Value="2" Icon="playlist_add"/>
         </ChildContent>
     </RadzenSplitButton>
-    <RadzenMenuItem Text="Cardfile" Icon="view_agenda">
+
+    <RadzenButton Icon="save" 
+                  Text="Save Contact" 
+                  Variant="@Variant.Text" 
+                  Disabled="@(!SaveButtonIsEnabled)" 
+                  ButtonStyle="@ButtonStyle.Light"
+                  Click="btnSave_OnClick"/>
+
+  @*   <RadzenMenuItem Text="Cardfile" Icon="view_agenda">
         <RadzenMenuItem Text="New" Path="buttons" Icon="add_circle"></RadzenMenuItem>
         <RadzenMenuItem Text="Open" Path="buttons" Icon="folder_open"></RadzenMenuItem>
     </RadzenMenuItem>
@@ -44,7 +52,7 @@
                 <RadzenMenuItem Text="Item2"></RadzenMenuItem>
             </RadzenMenuItem>
         </RadzenMenuItem>
-    </RadzenMenuItem>
+    </RadzenMenuItem> *@
 </RadzenMenu>
 }
 

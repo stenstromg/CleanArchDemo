@@ -47,7 +47,7 @@ namespace Demo.PresentationAPI
             builder.Services.AddScoped<IAccountService, AccountService>();
             builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 
-            builder.Services.AddScoped<IAuthenticatorService, AuthenticatorService>();
+            //builder.Services.AddScoped<IAuthenticatorService, AuthenticatorService>();
 
             builder.Services.AddTransient<IUserLoginService, UserLoginService>();
             builder.Services.AddTransient<IUserLoginRepository, UserLoginRepository>();

@@ -1,4 +1,5 @@
-﻿using Demo.App.Interfaces;
+﻿using Demo.App.Exceptions;
+using Demo.App.Interfaces;
 using Demo.App.Models;
 using Demo.Domain.Models;
 using Demo.Domain.Security;
@@ -32,6 +33,7 @@ namespace Demo.App.Services
         /// <param name="password"></param>
         /// <param name="userId"></param>
         /// <returns></returns>
+        /// <exception cref="InvalidCredentialsException"></exception>
         UserLogin? GetUserLogin(string password, string username);
 
         /// <summary>
@@ -48,13 +50,23 @@ namespace Demo.App.Services
         /// <returns></returns>
         List<UserLogin>? GetUserLogins(List<Expression<Func<UserLogin, bool>>>? filters = null);
 
+        /// <summary>
+        ///  Creates a new UserLogin record, as well as a required COntact record plus additional 
+        ///  Email and Person objects
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="author"></param>
+        /// <returns> The new contact object created and associated with the UserLogin </returns>
+        Contact RegisterUser(UserLoginRegistrationModel model, string author = "AUTO");
     }
 
+    /// <summary>
+    /// Provides member for accessing the Infrastructure UserRepository functionality
+    /// </summary>
+    /// <param name="userRepository"></param>
     public class UserLoginService(IUserLoginRepository userRepository) : IUserLoginService
     {
         #region properties
-
-        AuthenticatorService _authService { get; set; } = new AuthenticatorService(userRepository);
 
         IUserLoginRepository _repository { get; set; } = userRepository;
 
@@ -86,8 +98,16 @@ namespace Demo.App.Services
 
         public UserLogin? GetUserLogin(string password, string username)
         {
-            UserLogin? ret = this._repository.GetUserLogin(password, username);
-            return ret;
+            try
+            {
+                UserLogin? ret = this._repository.GetUserLogin(password, username);
+                return ret;
+            }
+            catch (Exception ex)
+            {
+                while(ex.InnerException != null) ex = ex.InnerException;
+                throw ex;
+            }
         }
 
         public UserLogin? GetUserLoginByID(long loginId)
@@ -98,6 +118,12 @@ namespace Demo.App.Services
         public List<UserLogin>? GetUserLogins(List<Expression<Func<UserLogin, bool>>>? filters = null)
         {
             return this._repository?.GetUserLogins(filters);
+        }
+
+        public Contact RegisterUser(UserLoginRegistrationModel model, string author = "AUTO")
+        {
+            Contact contact = this._repository.RegisterUser(model, author);
+            return contact;
         }
 
         #endregion public

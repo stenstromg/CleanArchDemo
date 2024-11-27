@@ -29,6 +29,14 @@ namespace Demo.Domain.Models
         public string?  EmailUsername { get; set; }
 
         /// <summary>
+        ///  Gets/Sets a flag indicating whether this is the primary email address in a contact 
+        ///  record.
+        /// </summary>
+        [JsonPropertyName("isPrimary")]
+        [NotMapped]
+        public bool IsPrimary { get; set; } = false;
+
+        /// <summary>
         /// Gets/Sets the label of the email address (e.g. Cell, Business, etc.)
         /// </summary>
         [JsonPropertyName("label")]
@@ -81,7 +89,12 @@ namespace Demo.Domain.Models
             return $"{EmailUsername}@{Domain}";
         }
 
-
+        /// <summary>
+        /// Creates a new Email instance by parsing the <paramref name="emailAddress"/> argument.
+        /// </summary>
+        /// <param name="emailAddress"></param>
+        /// <param name="email"></param>
+        /// <returns></returns>
         public static bool TryParse(string emailAddress, out Email email)
         {
             email = new Email(emailAddress);

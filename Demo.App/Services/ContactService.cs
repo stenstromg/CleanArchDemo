@@ -1,9 +1,7 @@
 ﻿using Demo.App.Interfaces;
 using Demo.App.Models;
-using Demo.App.Utilities;
 using Demo.Domain.Models;
 using System.Linq.Expressions;
-using System.Runtime.CompilerServices;
 
 namespace Demo.App.Services
 {
@@ -49,6 +47,10 @@ namespace Demo.App.Services
         Contact SaveContact(Contact model, String updatedBy);
     }
 
+    /// <summary>
+    /// Provides member for accessing the Infrastructure ContactRepository functionality
+    /// </summary>
+    /// <param name="userRepository"></param>
     public class ContactService(IContactRepository repository) : IContactService
     {
         #region properties
@@ -59,18 +61,9 @@ namespace Demo.App.Services
 
         #region public
 
-        //public Contact CreateContact(Contact contact, string updatedBy)
-        //{
-        //    ArgumentNullException.ThrowIfNull(contact);
-        //    ArgumentNullException.ThrowIfNull(contact.Person);
-
-        //    this._repository.CreateContactForLogin(contact);
-        //    return contact;
-        //}
-
         public Contact Register(UserLoginRegistrationModel model, String author)
         {
-            Contact contact = this._repository.CreateContactForLogin(model, author);
+            Contact contact = this._repository.RegisterUser(model, author);
             return contact;
         }
 

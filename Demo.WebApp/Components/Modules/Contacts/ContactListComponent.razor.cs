@@ -1,8 +1,10 @@
 ﻿using Azure;
 using Demo.App.Models;
 using Demo.App.Models.DTO;
+using Demo.App.Services.WebAPI;
 using Demo.Domain.Models;
 using Demo.WebApp.Classes;
+using Microsoft.AspNetCore.Components;
 
 namespace Demo.WebApp.Components.Modules.Contacts
 {
@@ -19,33 +21,34 @@ namespace Demo.WebApp.Components.Modules.Contacts
         #endregion properties
 
         #region parameters
+
+        [Parameter]
+        public EventCallback<long> OnItemClick { get; set; }
+
         #endregion parameters
+
+        #region properties
+
+        [Inject]
+        IContactApiService? ContactApiService { get; set; }
+
+        #endregion properties
+
 
         #region data
 
+        /// <summary>
+        ///  Gets the Contacts associated with the <paramref name="userID"/> argument. 
+        /// </summary>
+        /// <param name="userID"></param>
+        /// <returns></returns>
+        /// <exception cref="NullReferenceException"></exception>
         async Task<ICollection<Contact>?> GetContactsForUserID(long userID)
         {
-            if (this.ApiRepositorySvc != null)
+            if (ContactApiService != null)
             {
-                string apiKey = "PresentationAPI:GetContactsForUserID";
-                dynamic dto = new { id  = userID };
-                WebServiceResponse response = await this.ApiRepositorySvc.PostData2<ICollection<Contact>, dynamic>(apiKey, dto);
-
-                List<Contact>? ret = null;
-
-                if (response != null)
-                {
-                    switch (response.StatusCode)
-                    {
-                        case System.Net.HttpStatusCode.OK:
-                            ret = (List<Contact>?)response.Payload;
-                            break;
-                        default:
-                            this.ErrorMessage = $"Api Request failed : {response.Message}";
-                            this.ShowErrorMessage = true;
-                            break;
-                    }
-                }
+                string servicePath = base.AppConfigService.GetWebServiceFunctionURL("GetContactsForUserID");
+                ICollection<Contact>?  ret = await this.ContactApiService.GetContactsForUserID(servicePath, userID);
 
                 return ret;
             }
@@ -61,9 +64,18 @@ namespace Demo.WebApp.Components.Modules.Contacts
 
         protected override async Task OnInitializedAsync()
         {
-            if (base.SessionService != null && base.SessionService.ActiveUser != null)
+            if (base.AppSession != null && base.AppSession.ActiveUser != null)
             {
-                this.ContactList = await this.GetContactsForUserID(base.SessionService.ActiveUser.ID);
+                try
+                {
+                    this.ContactList = await this.GetContactsForUserID(base.AppSession.ActiveUser.ID);
+                }
+                catch (Exception ex)
+                {
+                    while(ex.InnerException != null) ex = ex.InnerException;
+                    this.ErrorMessage = ex.Message;
+                    this.ShowErrorMessage = true;
+                }
             }
         }
 
@@ -75,6 +87,15 @@ namespace Demo.WebApp.Components.Modules.Contacts
         #endregion lifecycle
 
         #region event handlers
+
+        async void ListItem_OnClick(long contactID)
+        {
+            if (OnItemClick.HasDelegate)
+            {
+                await OnItemClick.InvokeAsync(contactID);
+            }
+        }
+
         #endregion event handlers
 
         #region private

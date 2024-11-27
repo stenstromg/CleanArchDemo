@@ -1,12 +1,5 @@
-﻿using Demo.App.Interfaces;
-using Demo.App.Models;
-using Demo.App.Models.DTO;
-using Demo.Domain.Models;
+﻿using Demo.Domain.Models;
 using Demo.WebApp.Classes;
-using Demo.WebApp.Components.Forms;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.SqlServer.Server;
 
 namespace Demo.WebApp.Components.Pages
 {
@@ -27,26 +20,6 @@ namespace Demo.WebApp.Components.Pages
         #endregion inject
 
         #region data
-
-        /// <summary>
-        /// Processes the request to register a new user and contact (every user must have a contact).
-        /// </summary>
-        /// <param name="registrationData"></param>
-        /// <returns></returns>
-        /// <exception cref="NullReferenceException"></exception>
-        async Task<Contact?> RegisterNewUser(UserLoginRegistrationModel registrationData)
-        {
-            if (this.ApiRepositorySvc != null)
-            {
-                Contact? ret = await this.ApiRepositorySvc.PostData<Contact, UserLoginRegistrationModel>("PresentationAPI:Register", registrationData);
-                return ret;
-            }
-            else
-            {
-                throw new NullReferenceException("CreateContact key for PresentationAPI node was not found in appsettings.");
-            }
-        }
-
         #endregion data
 
         #region lifecycle
