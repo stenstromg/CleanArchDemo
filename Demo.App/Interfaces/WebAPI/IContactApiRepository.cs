@@ -30,5 +30,15 @@ namespace Demo.App.Interfaces.WebAPI
         /// </param>
         /// <returns></returns>
         Task<ICollection<Contact>?> GetContactsForUserID(string serviceUrl, long userID);
+
+        /// <summary>
+        /// Saves the Contact record to the underlying datastore via the WebAPI. 
+        /// </summary>
+        /// <param name="serviceUrl">
+        ///     The url and path of the service that will be used to retreive the data
+        /// </param>
+        /// <param name="contact"></param>
+        /// <returns></returns>
+        Task<Contact> SaveContact(string serviceURL, Contact contact);
     }
 }

@@ -48,14 +48,15 @@ namespace Demo.App.Interfaces
         /// <param name="model"></param>
         /// <param name="author"></param>
         /// <returns>Returns the Contact associated with the newly created User.</returns>
-        Contact RegisterUser(UserLoginRegistrationModel model, string author = "AUTO");
+        Contact? RegisterUser(UserLoginRegistrationModel model, string author = "AUTO");
 
         /// <summary>
         /// Saves an existing Contact,  including any associated Person, Email, Phone records
         /// </summary>
         /// <param name="model"></param>
+        /// <param name="author"></param>
         /// <returns></returns>
-        bool SaveContact(Contact model, String updatedBy);
+        Contact? SaveContact(Contact model, String author = "AUTO");
 
     }
 }

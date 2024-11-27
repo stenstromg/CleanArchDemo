@@ -73,6 +73,21 @@ namespace Demo.Infrastructure.Repositories.WebAPI
             return ret;
         }
 
+        public async Task<Contact> SaveContact(string serviceURL, Contact contact)
+        {
+            // Call the method to post the requst to the WebService
+            //
+            WebServiceResponse response = await this._apiUtils.PostData2<Contact, Contact>(serviceURL, contact);
+
+            // Process the response
+            //
+            Contact? ret = ProcessResponse<Contact>(response);
+
+            // return the updated contact
+            //
+            return ret;
+        }
+
         #endregion public
     }
 }

@@ -69,6 +69,14 @@ namespace Demo.Domain.Models
         public string? Extension { get; set; }
 
         /// <summary>
+        ///  Gets/Sets a flag indicating whether this is the primary email address in a contact 
+        ///  record.
+        /// </summary>
+        [JsonPropertyName("isPrimary")]
+        [NotMapped]
+        public bool IsPrimary { get; set; } = false;
+
+        /// <summary>
         /// Gets/Sets the label of the Phone Number (e.g. Home, Cell, Business, etc.)
         /// </summary>
         [JsonPropertyName("label")]

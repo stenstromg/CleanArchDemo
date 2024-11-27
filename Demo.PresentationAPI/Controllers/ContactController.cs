@@ -48,6 +48,7 @@ namespace Demo.PresentationAPI.Controllers
             }
         }
 
+
         [HttpGet, ActionName("GetContactsForUserID")]
         [Route("/api/Contacts/User/{userID:long}")]
         public ActionResult<IEnumerable<Contact>> GetContactsForUserID2(long userID)
@@ -67,6 +68,21 @@ namespace Demo.PresentationAPI.Controllers
             }
         }
 
+
+        [HttpPost, ActionName("SaveContact")]
+        [Route("/api/Contact")]
+        public ActionResult<Contact> SaveContact([FromBody] Contact contact)
+        {
+            try
+            {
+                Contact ret = this._service.SaveContact(contact, "SYSTEM");
+                return Ok(ret);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
         //[HttpPost, ActionName("GetContactForID")]
         //[Route("/api/Contact")]

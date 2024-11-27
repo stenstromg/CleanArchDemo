@@ -40,6 +40,16 @@ namespace Demo.WebApp.Components.Modules.Contacts
 
         private async Task SaveContact()
         {
+            try
+            {
+                if (this.ContactApiService != null && this.Contact != null)
+                {
+                    Contact ret = await this.ContactApiService.SaveContact("SaveContact", this.Contact);
+                }
+            }
+            catch(Exception ex)
+            {
+            }
         }
 
         #endregion data

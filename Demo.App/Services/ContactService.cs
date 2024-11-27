@@ -83,9 +83,9 @@ namespace Demo.App.Services
             return this._repository.GetContacts(filters);
         }
 
-        public Contact SaveContact(Contact contact, string updatedBy)
+        public Contact? SaveContact(Contact contact, string author = "AUTO")
         {
-            Contact ret = this.SaveContact(contact, updatedBy);
+            Contact? ret = this._repository.SaveContact(contact, author);
             return ret;
 
         }

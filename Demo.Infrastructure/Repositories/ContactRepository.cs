@@ -27,12 +27,12 @@ namespace Demo.Infrastructure.Repositories
 
         #region public
 
-        public Contact CreateContact(Contact contact, string author = "AUTO")
+        public Contact? CreateContact(Contact contact, string author = "AUTO")
         {
-            bool success = this.SaveContact(contact, author);
+            Contact? ret = this.SaveContact(contact, author);
             //this._db.Contacts.Add(contact);
             //this._db.SaveChanges();
-            return contact;
+            return ret;
         }
 
         public bool DeleteContact(long id)
@@ -98,7 +98,7 @@ namespace Demo.Infrastructure.Repositories
             return ret;
         }
 
-        public Contact RegisterUser(UserLoginRegistrationModel model, string author = "AUTO")
+        public Contact? RegisterUser(UserLoginRegistrationModel model, string author = "AUTO")
         {
             this._timestamp  = DateTime.UtcNow;
             this._updatedBy  = author;
@@ -197,11 +197,97 @@ namespace Demo.Infrastructure.Repositories
             return contact;
         }
 
-        public bool SaveContact(Contact contactModel, String updatedBy)
+        public Contact? SaveContact(Contact contactModel, string author = "AUTO")
         {
             this._timestamp = DateTime.UtcNow;
-            this._updatedBy = updatedBy;
+            this._updatedBy = author;
 
+            Contact? ret = null;
+
+            if (contactModel.ID == default(long))
+            {
+                ret = this.AddContact(contactModel);
+                return ret;
+            }
+            else
+            {
+                ret = this.UpdateContact(contactModel);
+                return ret;
+            }
+        }
+
+        #endregion public
+
+        #region private
+
+        private Contact? AddContact(Contact contactModel)
+        {
+            using (var transaction = this._db.Database.BeginTransaction())
+            {
+                if (contactModel != null)
+                {
+                    if (contactModel.Emails != null)
+                    {
+                        // We will assume that since this contact is NEW so are all the component
+                        // pieces (i.e. Email, Phone Numbers, etc) and ADD them
+                        //
+                        foreach (var email in contactModel.Emails)
+                        {
+                            email.CreatedBy   = email.UpdatedBy   = this._updatedBy;
+                            email.CreatedDate = email.UpdatedDate = this._timestamp;
+
+                            this._db.Emails.Add(email);
+                            this._db.SaveChanges();
+
+                            // If the Email is marked as the PRIMARY key then set it 
+                            //
+                            if (email.IsPrimary)
+                            {
+                                contactModel.PrimaryEmailID = email.ID;
+                            }
+                        }
+                    }
+
+                    if (contactModel.PhoneNumbers != null)
+                    {
+                        // We will assume that since this contact is NEW so are all the component
+                        // pieces (i.e. Email, Phone Numbers, etc) and ADD them
+                        //
+                        foreach (var phone in contactModel.PhoneNumbers)
+                        {
+                            phone.CreatedBy   = phone.UpdatedBy   = this._updatedBy;
+                            phone.CreatedDate = phone.UpdatedDate = this._timestamp;
+
+                            this._db.PhoneNumbers.Add(phone);
+                            this._db.SaveChanges();
+
+                            // If the Email is marked as the PRIMARY key then set it 
+                            //
+                            if (phone.IsPrimary)
+                            {
+                                contactModel.PrimaryPhoneNumberID = phone.ID;
+                            }
+                        }
+                    }
+
+
+                    contactModel.CreatedBy   = contactModel.UpdatedBy   = this._updatedBy;
+                    contactModel.CreatedDate = contactModel.UpdatedDate = this._timestamp;
+
+                    this._db.Contacts.Add(contactModel);
+                    this._db.SaveChanges();
+                }
+
+                // Commit the transaction. Transaction will rollback if any commands fail.
+                //
+                transaction.Commit();
+            }
+
+            return contactModel;
+        }
+
+        private Contact? UpdateContact(Contact contactModel)
+        {
             var contactEntity = this._db.Contacts.Where(e => e.ID == contactModel.ID)
                                           .Include(c => c.Emails)
                                           .Include(c => c.PhoneNumbers)
@@ -223,11 +309,12 @@ namespace Demo.Infrastructure.Repositories
                 try
                 {
                     this._db.SaveChanges();
-                    return true;
+                    return contactEntity;
                 }
                 catch (Exception ex)
                 {
-                    return false;
+                    while (ex.InnerException != null) { ex = ex.InnerException; }
+                    throw new Exception(ex.Message);
                 }
             }
             else
@@ -245,30 +332,20 @@ namespace Demo.Infrastructure.Repositories
                     contactModel.UserProfile.Email.Contact = contactModel;
                 }
 
-                //if (contactModel.PrimaryEmail != null)
-                //{
-                //    contactModel.PrimaryEmail.Contact = contactModel;
-                //}
-
                 try
                 {
                     this._db.Contacts.Add(contactModel);
                     this._db.SaveChanges();
-                    return true;
+                    return contactModel;
                 }
                 catch (Exception ex)
                 {
-                    return false;
+                    while (ex.InnerException != null) { ex = ex.InnerException; }
+                    throw new Exception(ex.Message);
                 }
             }
-
-            return false;
-
         }
 
-        #endregion public
-
-        #region private
 
         /// <summary>
         /// Updates the email objects associated with the <paramref name="contactEntity"/> argument with 
