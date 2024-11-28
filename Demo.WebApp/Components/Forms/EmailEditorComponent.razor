@@ -5,7 +5,7 @@
     {
         <RadzenRow AlignItems="@AlignItems.Center">
             <RadzenColumn Size="3">
-                <RadzenButton Icon="@((email.IsPrimary) ? "mark_email_unread" : "email")"
+                <RadzenButton Icon="@((email.IsPrimary) ? "mark_email_read" : "email")"
                               ButtonStyle="@((email.IsPrimary) ? ButtonStyle.Success : ButtonStyle.Secondary)"
                               Click="@(() => btnPrimary_OnClick(email))"></RadzenButton>
             </RadzenColumn>

@@ -88,7 +88,6 @@ namespace Demo.Domain.Models
 
         #region navigation properties
 
-
         [JsonPropertyName("contactId")]
         [ForeignKey("Contact")]
         [Column("contact_id")]
@@ -101,6 +100,23 @@ namespace Demo.Domain.Models
         #endregion navigation properties
 
         #region public
+
+        public void SetPhoneNumber(string phoneNumber)
+        {
+            if (PhoneNumber.TryParse(phoneNumber, out PhoneNumber stage))
+            {
+                this.LineNumber  = stage.LineNumber;
+                this.AreaCode    = stage.AreaCode;
+                this.CountryCode = stage.CountryCode;
+                this.Extension   = stage.Extension;
+                this.Prefix      = stage.Prefix;
+            }
+        }
+
+        public override string ToString()
+        {
+            return $"({AreaCode}) {Prefix}-{LineNumber}";
+        }
 
         public static bool TryParse(string phoneNumber, out PhoneNumber phone)
         {

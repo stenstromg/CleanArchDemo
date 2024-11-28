@@ -3,10 +3,10 @@
 @if (this.Visible)
 {
 <RadzenMenu class="unq-main-menu">
-    <RadzenSplitButton Text="Contact" Icon="person" DropDownIcon="keyboard_double_arrow_down">
+    <RadzenSplitButton Text="Contact" Icon="person" DropDownIcon="keyboard_double_arrow_down" Click="@btnContact_OnClick">
         <ChildContent>
-            <RadzenSplitButtonItem Text="New Contact"      Value="1" Icon="person_add"/>
-            <RadzenSplitButtonItem Text="New Contact List" Value="2" Icon="playlist_add"/>
+            <RadzenSplitButtonItem Text="New Contact"      Value="add-contact" Icon="person_add" />
+            <RadzenSplitButtonItem Text="New Contact List" Value="add-list" Icon="playlist_add"/>
         </ChildContent>
     </RadzenSplitButton>
 

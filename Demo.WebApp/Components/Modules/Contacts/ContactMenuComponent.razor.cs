@@ -1,6 +1,7 @@
 ﻿using Demo.Domain.Models;
 using Demo.WebApp.Classes;
 using Microsoft.AspNetCore.Components;
+using Radzen.Blazor;
 
 namespace Demo.WebApp.Components.Modules.Contacts
 {
@@ -18,6 +19,9 @@ namespace Demo.WebApp.Components.Modules.Contacts
         public bool Visible { get; set; } = false;
 
         [Parameter]
+        public EventCallback OnAddNewClick { get; set; }
+
+        [Parameter]
         public EventCallback OnSaveClick { get; set; }
 
         #endregion parameters
@@ -29,6 +33,19 @@ namespace Demo.WebApp.Components.Modules.Contacts
         #endregion lifecycle
 
         #region event handlers
+
+        void btnContact_OnClick(RadzenSplitButtonItem arg)
+        {
+            switch (arg.Value.ToLower())
+            {
+                case "add-contact":
+                    if (this.OnAddNewClick.HasDelegate)
+                    {
+                        this.OnAddNewClick.InvokeAsync();
+                    }
+                    break;
+            }
+        }
 
         void btnSave_OnClick()
         {

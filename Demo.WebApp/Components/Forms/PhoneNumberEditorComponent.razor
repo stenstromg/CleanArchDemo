@@ -1,0 +1,44 @@
+﻿@inherits UnqComponentBase
+
+<RadzenStack Orientation="@Orientation.Vertical" Gap=".2rem">
+    @foreach (var phone in this.Contact.PhoneNumbers.Where(e => e.DbAction != Domain.Enums.EntityActions.Remove).ToList())
+    {
+        <RadzenRow AlignItems="@AlignItems.Center">
+            <RadzenColumn Size="3">
+                <RadzenButton Icon="@((phone.IsPrimary) ? "mobile_friendly" : "smartphone")"
+                              ButtonStyle="@((phone.IsPrimary) ? ButtonStyle.Success : ButtonStyle.Secondary)"
+                              Click="@(() => btnPrimaryPhone_OnClick(phone))"></RadzenButton>
+            </RadzenColumn>
+            <RadzenColumn Size="5">
+
+                <RadzenFormField Variant="@Variant.Text" Style="width:100%;margin-top:0;" Text="Phone Number">
+                    <RadzenMask Mask="(***) ***-****" Value="@phone.ToString()"
+                                CharacterPattern="[0-9]" 
+                                Placeholder="(000) 000-0000" 
+                                Name="Phone" Style="font-size:1rem"
+                                Change="@((value)=>{ txPhone_OnChange(phone, value);})"></RadzenMask>
+                </RadzenFormField>
+
+            </RadzenColumn>
+            <RadzenColumn Size="2">
+
+                <RadzenFormField Variant="@Variant.Text" Style="width:100%;margin-top:0;" Text="Ext">
+                    <RadzenTextBox Name="txExtension" Style="font-size:1rem;" @bind-Value="@phone.Extension" Change="@((value) => { txExtension_OnChange(phone, value); })"></RadzenTextBox>
+                </RadzenFormField>
+
+            </RadzenColumn>
+            <RadzenColumn Size="2">
+                <RadzenStack Orientation="@Orientation.Horizontal" Gap="5px" JustifyContent="@JustifyContent.End">
+                    <RadzenButton Icon="delete" ButtonStyle="@ButtonStyle.Light" Click="@(() => btnDeletePhone_OnClick(phone))"></RadzenButton>
+                </RadzenStack>
+            </RadzenColumn>
+        </RadzenRow>
+    }
+    <RadzenRow AlignItems="@AlignItems.Center">
+        <RadzenColumn Size="6">
+            <RadzenStack Orientation="@Orientation.Horizontal" Gap="0">
+                <RadzenButton Icon="add" Text="Add Phone Number" Variant="@Variant.Text" Style="padding:.5rem .7rem .5rem .5rem;" Click="@btnAddPhone_OnClick"></RadzenButton>
+            </RadzenStack>
+        </RadzenColumn>
+    </RadzenRow>
+</RadzenStack>

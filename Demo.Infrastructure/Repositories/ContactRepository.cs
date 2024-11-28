@@ -75,6 +75,14 @@ namespace Demo.Infrastructure.Repositories
                 primaryEmail.IsPrimary = true;
             }
 
+            // Set the primary PhoneNumber flag
+            //
+            PhoneNumber? primaryPhone = ret.PhoneNumbers.Where(e => e.ID == ret.PrimaryPhoneNumberID).FirstOrDefault();
+            if (primaryPhone != null)
+            {
+                primaryPhone.IsPrimary = true;
+            }
+
             return ret;
         }
 
@@ -397,6 +405,9 @@ namespace Demo.Infrastructure.Repositories
                     contactEntity.Emails = new List<Email>();
                 }
 
+                emailModel.UpdatedDate = emailModel.CreatedDate = this._timestamp;
+                emailModel.UpdatedBy   = emailModel.CreatedBy   = this._updatedBy;
+
                 contactEntity.Emails.Add(emailModel);
             }
         }
@@ -461,8 +472,10 @@ namespace Demo.Infrastructure.Repositories
                             this.AddPhoneNumberToContact(contactEntity, phoneNumberModel);
                             break;
                         case Domain.Enums.EntityActions.Remove:
+                            this.RemovePhoneFromContact(contactEntity, phoneNumberModel);
                             break;
                         case Domain.Enums.EntityActions.Update: 
+                            this.UpdatePhoneNumberInContact(contactEntity, phoneNumberModel);
                             break;
                     }
 
@@ -505,7 +518,7 @@ namespace Demo.Infrastructure.Repositories
                                                                          .FirstOrDefault();
                     if (phoneEntity != null)
                     {
-                        contactEntity.PhoneNumbers?.Remove(phoneNumberModel);
+                        contactEntity.PhoneNumbers?.Remove(phoneEntity);
                     }
                 }
             }
@@ -521,18 +534,18 @@ namespace Demo.Infrastructure.Repositories
                                                         .FirstOrDefault();
                 if (phoneEntity != null)
                 {
-                    phoneEntity.UpdatedBy   = this._updatedBy;
-                    phoneEntity.UpdatedDate = this._timestamp;
                     phoneEntity.Extension   = phoneNumberModel.Extension;
                     phoneEntity.Prefix      = phoneNumberModel.Prefix;
                     phoneEntity.AreaCode    = phoneNumberModel.AreaCode;
                     phoneEntity.CountryCode = phoneNumberModel.CountryCode;
                     phoneEntity.Label       = phoneNumberModel.Label;
                     phoneEntity.LineNumber  = phoneNumberModel.LineNumber;
+
+                    phoneEntity.UpdatedBy   = this._updatedBy;
+                    phoneEntity.UpdatedDate = this._timestamp;
                 }
             }
         }
-
 
         void UpdateContactPerson(Contact contactEntity, Person personModel) 
         {

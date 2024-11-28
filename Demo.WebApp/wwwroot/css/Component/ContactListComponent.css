@@ -1,6 +1,9 @@
 ﻿.unq-contact-list-item {
   padding: 1rem;
 }
+.unq-contact-list-item.unq-selected {
+  background-color: var(--rz-base-400);
+}
 .unq-contact-list-item:hover {
   background-color: var(--rz-base-400);
   cursor: pointer;

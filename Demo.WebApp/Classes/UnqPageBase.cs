@@ -15,7 +15,7 @@ namespace Demo.WebApp.Classes
         #region parameters
 
         [CascadingParameter(Name ="Layout")]
-        MainLayout? Layout { get; set; }
+        protected MainLayout? Layout { get; set; }
 
         #endregion parameters
 

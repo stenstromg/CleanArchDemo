@@ -6,9 +6,7 @@
     @if(this.Contact != null)
     {
         <RadzenStack Orientation="@Orientation.Horizontal" class="unq-contact-editor-header rz-pb-8">
-            <div class="unq-profile-icon unq-profile-icon-large">
-                <span>GS</span>
-            </div>
+            <AvatarComponent Person="@Contact.Person" Size="@AvatarComponent.AvatarSizes.Large"/>
             <div class="unq-contact-editor-contact-name">@($"{this.Contact.Person?.LastName}, {this.Contact.Person?.FirstName}")</div>
         </RadzenStack>
 
@@ -53,9 +51,18 @@
                     </RadzenFieldset>
                 </RadzenColumn>
                 <RadzenColumn Size="6">
-                    <RadzenFieldset Text="Email">
-                        <EmailEditorComponent Contact="@Contact" OnEmailHasChanged="EmailEditor_OnChange"></EmailEditorComponent>
-                    </RadzenFieldset>
+
+                    <RadzenStack Orientation="@Orientation.Vertical" Gap="1rem">
+
+                        <RadzenFieldset Text="Email">
+                            <EmailEditorComponent Contact="@Contact" OnEmailHasChanged="@EmailEditor_OnChange"></EmailEditorComponent>
+                        </RadzenFieldset>
+
+                        <RadzenFieldset Text="Phone Numbers">
+                            <PhoneNumberEditorComponent Contact="@Contact" OnPhoneHasChanged="@PhoneEditor_OnChange"></PhoneNumberEditorComponent>
+                        </RadzenFieldset>
+
+                    </RadzenStack>
                 </RadzenColumn>
             </RadzenRow>
         </RadzenTemplateForm>

@@ -18,6 +18,8 @@ namespace Demo.WebApp.Components.Modules.Contacts
 
         bool ShowErrorMessage { get; set; } = false;
 
+        Contact? SelectedContact { get; set; }
+
         #endregion properties
 
         #region parameters
@@ -33,7 +35,6 @@ namespace Demo.WebApp.Components.Modules.Contacts
         IContactApiService? ContactApiService { get; set; }
 
         #endregion properties
-
 
         #region data
 
@@ -64,19 +65,7 @@ namespace Demo.WebApp.Components.Modules.Contacts
 
         protected override async Task OnInitializedAsync()
         {
-            if (base.AppSession != null && base.AppSession.ActiveUser != null)
-            {
-                try
-                {
-                    this.ContactList = await this.GetContactsForUserID(base.AppSession.ActiveUser.ID);
-                }
-                catch (Exception ex)
-                {
-                    while(ex.InnerException != null) ex = ex.InnerException;
-                    this.ErrorMessage = ex.Message;
-                    this.ShowErrorMessage = true;
-                }
-            }
+            await this.RenderContactList();
         }
 
         protected override void OnInitialized()
@@ -88,20 +77,59 @@ namespace Demo.WebApp.Components.Modules.Contacts
 
         #region event handlers
 
-        async void ListItem_OnClick(long contactID)
+        async void ListItem_OnClick(Contact contact)
         {
+            this.SelectedContact = contact;
+
             if (OnItemClick.HasDelegate)
             {
-                await OnItemClick.InvokeAsync(contactID);
+                await OnItemClick.InvokeAsync(contact.ID);
             }
         }
 
         #endregion event handlers
 
         #region private
+
+        string GetListItemCSS(Contact contact)
+        {
+            string ret = "unq-contact-list-item";
+
+            if (this.SelectedContact != null && this.SelectedContact.ID == contact.ID)
+            {
+                ret = $"{ret} unq-selected";
+            }
+
+            return ret;
+        }
+
+        async Task RenderContactList()
+        {
+            if (base.AppSession != null && base.AppSession.ActiveUser != null)
+            {
+                try
+                {
+                    this.ContactList = await this.GetContactsForUserID(base.AppSession.ActiveUser.ID);
+                }
+                catch (Exception ex)
+                {
+                    while (ex.InnerException != null) ex = ex.InnerException;
+                    this.ErrorMessage = ex.Message;
+                    this.ShowErrorMessage = true;
+                }
+            }
+        }
+
         #endregion private
 
         #region public
+
+        public async Task Refresh()
+        {
+            await this.RenderContactList();
+            base.StateHasChanged();
+        }
+
         #endregion public
     }
 }

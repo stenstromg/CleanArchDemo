@@ -26,6 +26,9 @@ namespace Demo.WebApp.Components.Modules.Contacts
         public Contact? Contact { get; set; } = null;
 
         [Parameter]
+        public EventCallback<Contact?> OnContactSave { get; set; }
+
+        [Parameter]
         public bool Visible { get; set; } = false;
 
         #endregion parameters
@@ -95,6 +98,11 @@ namespace Demo.WebApp.Components.Modules.Contacts
             base.Layout?.ContactMenu?.EnableSaveButton(true);
         }
 
+        void PhoneEditor_OnChange()
+        {
+            base.Layout?.ContactMenu?.EnableSaveButton(true);
+        }
+
         async void MenuBtnSave_OnClick()
         {
             // Open the "Busy" dialog
@@ -115,9 +123,15 @@ namespace Demo.WebApp.Components.Modules.Contacts
             //
             this.ShowAlert("Saved");
 
+            // Fire the event
+            //
+            if (this.OnContactSave.HasDelegate)
+            {
+                await this.OnContactSave.InvokeAsync(this.Contact);
+            }
+
             // Open the acknowledgment dialog
             //
-
             base.StateHasChanged();
         }
 

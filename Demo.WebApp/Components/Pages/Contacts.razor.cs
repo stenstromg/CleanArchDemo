@@ -1,7 +1,9 @@
 ﻿using Demo.App.Services.WebAPI;
 using Demo.Domain.Models;
 using Demo.WebApp.Classes;
+using Demo.WebApp.Components.Modules.Contacts;
 using Microsoft.AspNetCore.Components;
+using Microsoft.EntityFrameworkCore;
 
 namespace Demo.WebApp.Components.Pages
 {
@@ -9,12 +11,14 @@ namespace Demo.WebApp.Components.Pages
     {
         #region properties
 
+        ContactListComponent? ContactList {get; set;}
+
+        bool ContactEditorIsVisible { get; set; } = false;
+
         /// <summary>
         /// Gets/Sets the contact that is being displayed in the editor.
         /// </summary>
         Contact? SelectedContact { get; set; }
-
-        bool ContactEditorIsVisible { get; set; } = false;
 
         #endregion properties
 
@@ -51,9 +55,23 @@ namespace Demo.WebApp.Components.Pages
         #endregion data
 
         #region lifecycle
+
+        protected override void OnInitialized()
+        {
+            base.Layout.ContactMenu.OnAddNewClick= new EventCallback(this, (Action)MenuBtnAdd_OnClick);
+
+            base.OnInitialized();
+        }
+
         #endregion lifecycle
 
         #region event handlers
+
+        async void ContectEditor_OnSave(Contact contact)
+        {
+            await this.ContactList.Refresh();
+            base.StateHasChanged();
+        }
 
         async void ContactList_OnItemSelect(long contactID)
         {
@@ -62,9 +80,31 @@ namespace Demo.WebApp.Components.Pages
             base.StateHasChanged();
         }
 
+        void MenuBtnAdd_OnClick()
+        {
+            this.SelectedContact = this.InitializeNewContact();
+            this.ContactEditorIsVisible = true;
+            base.StateHasChanged();
+        }
+
         #endregion event handlers
 
         #region private
+
+        Contact InitializeNewContact()
+        {
+            Contact ret = new Contact() 
+            { 
+                DbAction = Domain.Enums.EntityActions.Add,
+                UserID = base.SessionService.ActiveUser.ID,
+                Emails = new HashSet<Email>(),
+                Person = new Person(),
+                PhoneNumbers = new HashSet<PhoneNumber>(),
+            };
+
+            return ret;
+        }
+
         #endregion private
 
         #region public

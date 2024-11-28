@@ -10,13 +10,11 @@ else
     {
         foreach(Contact contact in this.ContactList)
         {
-            <RadzenStack Orientation="@Orientation.Horizontal" class="unq-contact-list-item" onclick="@(()=> ListItem_OnClick(contact.ID))">
-                <div class="unq-profile-icon unq-profile-icon-regular">
-                    <span>GS</span>
-                </div>
+            <RadzenStack Orientation="@Orientation.Horizontal" class="@GetListItemCSS(contact)" onclick="@(()=> ListItem_OnClick(contact))">
+                <AvatarComponent Person="@contact.Person" Size="@AvatarComponent.AvatarSizes.Regular"/>
                 <RadzenStack Orientation="@Orientation.Vertical" Gap="0">
-                    <div>@($"{contact.Person?.LastName}, {contact.Person?.FirstName}")</div>
-                    <div>@($"{contact.PrimaryEmail?.ToString()}")</div>
+                    <div style="font-size: 1.2rem;">@($"{contact.Person?.LastName}, {contact.Person?.FirstName}")</div>
+                    <div style="font-size:.8rem;">@($"{contact.PrimaryEmail?.ToString()}")</div>
                 </RadzenStack>
             </RadzenStack>
         }
