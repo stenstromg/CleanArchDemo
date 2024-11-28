@@ -13,9 +13,9 @@ namespace Demo.Domain.Models
     {
         #region properties
 
-        [JsonPropertyName("email")]
-        [Column("email_id")]
-        public Email? Email { get; set; }
+        //[JsonPropertyName("email")]
+        //[Column("email_id")]
+        //public Email? Email { get; set; }
 
         [JsonPropertyName("failedLoginCount")]
         [Column("failed_login_count")]

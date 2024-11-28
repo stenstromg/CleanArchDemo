@@ -25,7 +25,7 @@
                                     <RadzenLabel Text="First Name" Component="@this.Contact.Person.FirstName"/>
                                 </RadzenColumn>
                                 <RadzenColumn Size="8">
-                                    <RadzenTextBox @bind-Value="@this.Contact.Person.FirstName" Style="width:100%"></RadzenTextBox>
+                                    <RadzenTextBox @bind-Value="@this.Contact.Person.FirstName" Style="width:100%" Change="ContactEditor_OnChange"></RadzenTextBox>
                                 </RadzenColumn>
                             </RadzenRow>
 
@@ -34,7 +34,7 @@
                                     <RadzenLabel Text="Last Name" Component="@this.Contact.Person.LastName" />
                                 </RadzenColumn>
                                 <RadzenColumn Size="8">
-                                    <RadzenTextBox @bind-Value="@this.Contact.Person.LastName" Style="width:100%"></RadzenTextBox>
+                                    <RadzenTextBox @bind-Value="@this.Contact.Person.LastName" Style="width:100%" Change="ContactEditor_OnChange"></RadzenTextBox>
                                 </RadzenColumn>
                             </RadzenRow>
 
@@ -43,7 +43,7 @@
                                     <RadzenLabel Text="Date Of Birth"/>
                                 </RadzenColumn>
                                 <RadzenColumn Size="8">
-                                    <RadzenDatePicker @bind-Value="@this.Contact.Person.DateOfBirth" DateFormat="MM/dd/yyyy" Style="width:100%"></RadzenDatePicker>
+                                    <RadzenDatePicker @bind-Value="@this.Contact.Person.DateOfBirth" DateFormat="MM/dd/yyyy" Style="width:100%" Change="ContactEditor_OnChange"></RadzenDatePicker>
                                 </RadzenColumn>
                             </RadzenRow>
                         </RadzenStack>

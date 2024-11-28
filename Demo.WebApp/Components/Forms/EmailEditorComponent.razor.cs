@@ -7,6 +7,12 @@ namespace Demo.WebApp.Components.Forms
     public partial class EmailEditorComponent : UnqComponentBase
     {
         #region properties
+
+        /// <summary>
+        /// Gets flag indicating whether to disable the delete icon on the email items.
+        /// </summary>
+        bool DisableDelete { get { return (this.Contact.Emails.Count == 1); } }
+
         #endregion properties
 
         #region parameters

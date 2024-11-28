@@ -84,25 +84,25 @@ namespace Demo.Infrastructure.Repositories
                         model.UserLogin.CreatedBy = model.UserLogin.UpdatedBy = author;
                         model.UserLogin.CreatedDate = model.UserLogin.UpdatedDate = timestamp;
                         model.UserLogin.Person = model.Person;
-                        model.UserLogin.Email = model.Email;
+                        //model.UserLogin.Email = model.Email;
                         this._db.UserLogins.Add(model.UserLogin);
 
                         this._db.SaveChanges();
 
                         contact = new Contact()
                         {
-                            DbAction = Domain.Enums.EntityActions.Add,
-                            PrimaryEmailID = model.Email?.ID,
+                            DbAction             = Domain.Enums.EntityActions.Add,
+                            PrimaryEmailID       = model.Email?.ID,
                             PrimaryPhoneNumberID = model.PhoneNumber?.ID,
-                            Emails = (model.Email == null) ? new List<Email>() : new List<Email>() { model.Email },
-                            PhoneNumbers = (model.PhoneNumber == null) ? new List<PhoneNumber>() : new List<PhoneNumber>() { model.PhoneNumber },
-                            Person = model.Person,
-                            UserProfile = model.UserLogin,
-                            UserID = model.UserLogin.ID,
-                            CreatedBy = author,
-                            CreatedDate = timestamp,
-                            UpdatedDate = timestamp,
-                            UpdatedBy = author,
+                            Emails               = (model.Email == null) ? new List<Email>() : new List<Email>() { model.Email },
+                            PhoneNumbers         = (model.PhoneNumber == null) ? new List<PhoneNumber>() : new List<PhoneNumber>() { model.PhoneNumber },
+                            Person               = model.Person,
+                            UserProfile          = model.UserLogin,
+                            UserID               = model.UserLogin.ID,
+                            CreatedBy            = author,
+                            CreatedDate          = timestamp,
+                            UpdatedDate          = timestamp,
+                            UpdatedBy            = author,
                         };
 
                         this._db.Contacts.Add(contact);
@@ -142,12 +142,12 @@ namespace Demo.Infrastructure.Repositories
 
             if (toDelete != null && this._db != null)
             {
-                // Delete Email if specified
-                //
-                if (options.DeleteEmail && toDelete.Email != null)
-                {
-                    this._db.Emails.Remove(toDelete.Email);
-                }
+                //// Delete Email if specified
+                ////
+                //if (options.DeleteEmail && toDelete.Email != null)
+                //{
+                //    this._db.Emails.Remove(toDelete.Email);
+                //}
 
                 // Delete Person if specified
                 //
@@ -180,7 +180,6 @@ namespace Demo.Infrastructure.Repositories
             string hashPWD = HashService.ComputeMD5Hash(password);
                 UserLogin? userLogin = this._db?.UserLogins.Where(e => e.Password == hashPWD && e.Username.ToLower() == username.ToLower())
                                                           .Include(user => user.Person)
-                                                          .Include(user => user.Email)
                                                           .FirstOrDefault();
             if (userLogin != null)
             {
@@ -197,7 +196,8 @@ namespace Demo.Infrastructure.Repositories
 
         public UserLogin? GetUserLoginByID(long loginId)
         {
-            return this._db?.UserLogins.Where(e => e.ID == loginId).Include(user => user.Person).Include(user => user.Email).FirstOrDefault() ?? null;
+            //return this._db?.UserLogins.Where(e => e.ID == loginId).Include(user => user.Person).Include(user => user.Email).FirstOrDefault() ?? null;
+            return this._db?.UserLogins.Where(e => e.ID == loginId).Include(user => user.Person).FirstOrDefault() ?? null;
         }
 
         public List<UserLogin>? GetUserLogins(List<Expression<Func<UserLogin, bool>>> filters)
@@ -208,7 +208,7 @@ namespace Demo.Infrastructure.Repositories
                             ID = user.ID,
                             CreatedBy = user.CreatedBy,
                             CreatedDate = user.CreatedDate,
-                            Email = user.Email,
+                            //Email = user.Email,
                             FailedLoginCount = user.FailedLoginCount,
                             IsEnabled = user.IsEnabled,
                             IsLocked = user.IsLocked,

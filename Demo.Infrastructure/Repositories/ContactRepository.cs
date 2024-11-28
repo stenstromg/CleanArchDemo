@@ -165,7 +165,7 @@ namespace Demo.Infrastructure.Repositories
                     model.UserLogin.CreatedBy = model.UserLogin.UpdatedBy = this._updatedBy;
                     model.UserLogin.CreatedDate = model.UserLogin.UpdatedDate = this._timestamp;
                     model.UserLogin.Person = model.Person;
-                    model.UserLogin.Email = model.Email;
+                    //model.UserLogin.Email = model.Email;
                     this._db.UserLogins.Add(model.UserLogin);
 
                     this._db.SaveChanges();
@@ -296,66 +296,73 @@ namespace Demo.Infrastructure.Repositories
 
         private Contact? UpdateContact(Contact contactModel)
         {
-            var contactEntity = this._db.Contacts.Where(e => e.ID == contactModel.ID)
+            using (IDbContextTransaction transaction = this._db.Database.BeginTransaction())
+            {
+                var contactEntity = this._db.Contacts.Where(e => e.ID == contactModel.ID)
                                           .Include(c => c.Emails)
                                           .Include(c => c.PhoneNumbers)
                                           .Include(c => c.Person)
                                           .Include(c => c.UserProfile)
                                           .FirstOrDefault();
-            if (contactEntity != null)
-            {
-                if (contactEntity.Emails != null)
-                {
-                    this.UpdateEmails(contactEntity, contactModel);
-                }
 
-                if (contactEntity.PhoneNumbers != null)
+                if (contactEntity != null)
                 {
-                    this.UpdatePhoneNumbers(contactEntity, contactModel);
-                }
-
-                if (contactEntity.Person != null && contactModel.Person != null)
-                {
-                    this.UpdateContactPerson(contactEntity, contactModel.Person);
-                }
-
-                try
-                {
-                    this._db.SaveChanges();
-                    return contactEntity;
-                }
-                catch (Exception ex)
-                {
-                    while (ex.InnerException != null) { ex = ex.InnerException; }
-                    throw new Exception(ex.Message);
-                }
-            }
-            else
-            {
-                if (contactModel.Emails != null)
-                {
-                    foreach (var email in contactModel.Emails)
+                    if (contactEntity.Emails != null)
                     {
-                        email.Contact = contactModel;
+                        this.UpdateEmails(contactEntity, contactModel);
+                    }
+
+                    if (contactEntity.PhoneNumbers != null)
+                    {
+                        this.UpdatePhoneNumbers(contactEntity, contactModel);
+                    }
+
+                    if (contactEntity.Person != null && contactModel.Person != null)
+                    {
+                        this.UpdateContactPerson(contactEntity, contactModel.Person);
+                    }
+
+                    try
+                    {
+                        this._db.SaveChanges();
+                        transaction.Commit();
+                        return contactEntity;
+                    }
+                    catch (Exception ex)
+                    {
+                        while (ex.InnerException != null) { ex = ex.InnerException; }
+                        throw new Exception(ex.Message);
+                    }
+                }
+                else
+                {
+                    if (contactModel.Emails != null)
+                    {
+                        foreach (var email in contactModel.Emails)
+                        {
+                            email.Contact = contactModel;
+                        }
+                    }
+
+                    //if (contactModel.UserProfile != null && contactModel.UserProfile.Email != null)
+                    //{
+                    //    contactModel.UserProfile.Email.Contact = contactModel;
+                    //}
+
+                    try
+                    {
+                        this._db.Contacts.Add(contactModel);
+                        this._db.SaveChanges();
+                        transaction.Commit();
+                        return contactModel;
+                    }
+                    catch (Exception ex)
+                    {
+                        while (ex.InnerException != null) { ex = ex.InnerException; }
+                        throw new Exception(ex.Message);
                     }
                 }
 
-                if (contactModel.UserProfile != null && contactModel.UserProfile.Email != null)
-                {
-                    contactModel.UserProfile.Email.Contact = contactModel;
-                }
-
-                try
-                {
-                    this._db.Contacts.Add(contactModel);
-                    this._db.SaveChanges();
-                    return contactModel;
-                }
-                catch (Exception ex)
-                {
-                    while (ex.InnerException != null) { ex = ex.InnerException; }
-                    throw new Exception(ex.Message);
-                }
             }
         }
 
@@ -370,7 +377,10 @@ namespace Demo.Infrastructure.Repositories
         {
             if (contactModel.Emails != null)
             {
-                foreach (var emailModel in contactModel.Emails)
+                // Go through each email, ordered on Action which will cause al the "ADDs" to happen
+                // first. We need this so that they are assigned ID's.
+                //
+                foreach (var emailModel in contactModel.Emails.OrderBy(e=>e.DbAction))
                 {
                     switch (emailModel.DbAction)
                     {
@@ -409,6 +419,8 @@ namespace Demo.Infrastructure.Repositories
                 emailModel.UpdatedBy   = emailModel.CreatedBy   = this._updatedBy;
 
                 contactEntity.Emails.Add(emailModel);
+
+                this._db.SaveChanges();
             }
         }
 
@@ -425,6 +437,7 @@ namespace Demo.Infrastructure.Repositories
                     if (emailEntity != null)
                     {
                         contactEntity.Emails?.Remove(emailEntity);
+                        this._db.Remove(emailEntity);
                     }
                 }
             }
@@ -519,6 +532,7 @@ namespace Demo.Infrastructure.Repositories
                     if (phoneEntity != null)
                     {
                         contactEntity.PhoneNumbers?.Remove(phoneEntity);
+                        this._db.Remove(phoneEntity);
                     }
                 }
             }

@@ -93,6 +93,11 @@ namespace Demo.WebApp.Components.Modules.Contacts
             base.StateHasChanged();
         }
 
+        void ContactEditor_OnChange()
+        {
+            base.Layout?.ContactMenu?.EnableSaveButton(true);
+        }
+
         void EmailEditor_OnChange()
         {
             base.Layout?.ContactMenu?.EnableSaveButton(true);
