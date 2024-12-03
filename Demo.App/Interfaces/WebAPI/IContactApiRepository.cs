@@ -7,6 +7,16 @@ namespace Demo.App.Interfaces.WebAPI
 {
     public interface IContactApiRepository
     {
+
+        /// <summary>
+        /// Returns a success flag after deleting the contact identified by the <paramref name="contactId"/> 
+        /// argument.
+        /// </summary>
+        /// <param name="serviceUrl"></param>
+        /// <param name="contactId"></param>
+        /// <returns></returns>
+        Task<bool?> DeleteContact(string serviceUrl, long contactId);
+
         /// <summary>
         /// Returns the existing Contact associted with the <paramref name="contactId"/> argument.
         /// </summary>

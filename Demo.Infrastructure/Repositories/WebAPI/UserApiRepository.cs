@@ -28,7 +28,7 @@ namespace Demo.Infrastructure.Repositories.WebAPI
 
         public async Task<UserLogin?> Login(string serviceURL, CredentialsModel creds)
         {
-            WebServiceResponse? response = await this._apiUtils.PostData2<UserLogin, CredentialsModel>(serviceURL, creds);
+            WebServiceResponse? response = await this._apiUtils.Post<UserLogin, CredentialsModel>(serviceURL, creds);
             UserLogin? userLogin = base.ProcessResponse<UserLogin>(response);
 
             return userLogin;
@@ -36,7 +36,7 @@ namespace Demo.Infrastructure.Repositories.WebAPI
 
         public async Task<Contact?> Register(string serviceURL, UserLoginRegistrationModel registrationData)
         {
-            WebServiceResponse? response = await this._apiUtils.PostData2<Contact, UserLoginRegistrationModel>(serviceURL, registrationData);
+            WebServiceResponse? response = await this._apiUtils.Post<Contact, UserLoginRegistrationModel>(serviceURL, registrationData);
             Contact? ret = base.ProcessResponse<Contact>(response);
 
             return ret;

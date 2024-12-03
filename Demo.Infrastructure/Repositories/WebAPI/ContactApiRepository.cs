@@ -35,6 +35,25 @@ namespace Demo.Infrastructure.Repositories.WebAPI
 
         #region public
 
+        public async Task<bool?> DeleteContact(string serviceUrl, long contactId)
+        {
+            // Assemble the WebAPI URL to request the contact from
+            //
+            string webApiURL = $"{serviceUrl}/{contactId}";
+
+            // Call the method to post the requst to the WebService
+            //
+            WebServiceResponse response = await _apiUtils.Delete<bool?>(webApiURL);
+
+            // Process the response.
+            //
+            object? ret = ProcessResponse<object>(response);
+
+            // Return the contact 
+            //
+            return ret as bool?;
+        }
+
         public async Task<Contact?> GetContactById(string serviceUrl, long contactId)
         {
             // Assemble the WebAPI URL to request the contact from
@@ -77,7 +96,7 @@ namespace Demo.Infrastructure.Repositories.WebAPI
         {
             // Call the method to post the requst to the WebService
             //
-            WebServiceResponse response = await this._apiUtils.PostData2<Contact, Contact>(serviceURL, contact);
+            WebServiceResponse response = await this._apiUtils.Post<Contact, Contact>(serviceURL, contact);
 
             // Process the response
             //

@@ -10,12 +10,20 @@ else
     {
         foreach(Contact contact in this.ContactList)
         {
-            <RadzenStack Orientation="@Orientation.Horizontal" class="@GetListItemCSS(contact)" onclick="@(()=> ListItem_OnClick(contact))">
-                <AvatarComponent Person="@contact.Person" Size="@AvatarComponent.AvatarSizes.Regular"/>
-                <RadzenStack Orientation="@Orientation.Vertical" Gap="0">
-                    <div style="font-size: 1.2rem;">@($"{contact.Person?.LastName}, {contact.Person?.FirstName}")</div>
-                    <div style="font-size:.8rem;">@($"{contact.PrimaryEmail?.ToString()}")</div>
+            <RadzenStack Orientation="@Orientation.Horizontal" class="@GetListItemCSS(contact)">
+                <RadzenStack Orientation="@Orientation.Horizontal" onclick="@(()=> ListItem_OnClick(contact))">
+                    <AvatarComponent Person="@contact.Person" Size="@AvatarComponent.AvatarSizes.Regular"/>
+                    <RadzenStack Orientation="@Orientation.Vertical" Gap="0">
+                        <div style="font-size: 1.2rem;">@($"{contact.Person?.LastName}, {contact.Person?.FirstName}")</div>
+                        <div style="font-size:.8rem;">@($"{contact.PrimaryEmail?.ToString()}")</div>
+                    </RadzenStack>
                 </RadzenStack>
+                <div>
+                    @if (contact.ID != AppSession.ActiveUser.ID)
+                    {
+                        <RadzenIcon Icon="delete" onclick="@(()=> ListItem_OnDelete(contact))"></RadzenIcon>
+                    }
+                </div>
             </RadzenStack>
         }
     }

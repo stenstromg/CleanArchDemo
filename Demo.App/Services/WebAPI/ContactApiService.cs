@@ -8,6 +8,18 @@ namespace Demo.App.Services.WebAPI
     public interface IContactApiService
     {
         /// <summary>
+        ///  Returns a flag indicating whether the contact associated with the <paramref name="contactID"/> 
+        ///  argument was successfully deleted.
+        /// </summary>
+        /// <param name="serviceURL">
+        ///     The URL to the WebService to service the request.
+        ///     Ex// https://domain.com/api/Contact
+        /// </param>
+        /// <param name="contactID"></param>
+        /// <returns></returns>
+        Task<bool?> DeleteContact(string serviceURL, long contactID);
+
+        /// <summary>
         /// Returns the Contact object associated with the <paramref name="contactID"/> argument.
         /// </summary>
         /// <param name="serviceURL">
@@ -58,6 +70,12 @@ namespace Demo.App.Services.WebAPI
         #endregion private
 
         #region public
+
+        public async Task<bool?> DeleteContact(string serviceURL, long contactID)
+        {
+            bool? ret = await _repository.DeleteContact(serviceURL, contactID);
+            return ret;
+        }
 
         public async Task<Contact?> GetContactByID(string serviceURL, long contactID)
         {

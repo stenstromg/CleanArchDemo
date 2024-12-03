@@ -1,5 +1,6 @@
 ﻿.unq-contact-list-item {
   padding: 1rem;
+  justify-content: space-between !important;
 }
 .unq-contact-list-item.unq-selected {
   background-color: var(--rz-base-400);

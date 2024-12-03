@@ -41,18 +41,60 @@ namespace Demo.Infrastructure.Repositories
                                          .Include(c => c.Emails)
                                          .Include(c => c.PhoneNumbers)
                                          .Include(c => c.Person)
+                                         .Include(c=>c.UserProfile)
                                          .FirstOrDefault();
 
             if (contact != null)
             {
-                try
+                // Make sure that the contact being deleted is not associated with a UserLogin record.
+                // UserLogin records MUST be associated with a contact. 
+                //
+                if (contact.UserProfile != null)
                 {
-                    this._db.Contacts.Remove(contact);
-                    return true;
+                    throw new ApplicationException("Contact is associated with UserLogin");
                 }
-                catch (Exception ex)
+                else
                 {
-                    return false;
+                    using (var transaction = this._db.Database.BeginTransaction())
+                    {
+                        try
+                        {
+                            // we will need to remove the dependent objects first. THe CASCADE is
+                            // not working and will need to be looked into.
+                            //
+                            if (contact.Emails != null)
+                            {
+                                foreach (var email in contact.Emails)
+                                {
+                                    this._db.Emails.Remove(email);
+                                }
+                            }
+
+                            if (contact.PhoneNumbers != null)
+                            {
+                                foreach (var phone in contact.PhoneNumbers)
+                                {
+                                    this._db.PhoneNumbers.Remove(phone);
+                                }
+                            }
+
+                            if (contact.Person != null) 
+                            { 
+                                this._db.People.Remove(contact.Person);
+                            }
+
+                            this._db.Contacts.Remove(contact);
+
+                            this._db.SaveChanges();
+                            transaction.Commit();
+
+                            return true;
+                        }
+                        catch (Exception ex)
+                        {
+                            return false;
+                        }
+                    }
                 }
             }
 

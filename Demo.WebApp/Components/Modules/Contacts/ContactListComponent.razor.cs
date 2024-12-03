@@ -5,6 +5,7 @@ using Demo.App.Services.WebAPI;
 using Demo.Domain.Models;
 using Demo.WebApp.Classes;
 using Microsoft.AspNetCore.Components;
+using Radzen;
 
 namespace Demo.WebApp.Components.Modules.Contacts
 {
@@ -29,12 +30,15 @@ namespace Demo.WebApp.Components.Modules.Contacts
 
         #endregion parameters
 
-        #region properties
+        #region inject
 
         [Inject]
         IContactApiService? ContactApiService { get; set; }
 
-        #endregion properties
+        [Inject]
+        DialogService DialogSvc { get; set; }
+
+        #endregion inject
 
         #region data
 
@@ -50,6 +54,27 @@ namespace Demo.WebApp.Components.Modules.Contacts
             {
                 string servicePath = base.AppConfigService.GetWebServiceFunctionURL("GetContactsForUserID");
                 ICollection<Contact>?  ret = await this.ContactApiService.GetContactsForUserID(servicePath, userID);
+
+                return ret;
+            }
+            else
+            {
+                throw new NullReferenceException("ApiRepositoryService not available.");
+            }
+        }
+
+        /// <summary>
+        /// Deletes the contact associaated with the <paramref name="contactID"/> argument.
+        /// </summary>
+        /// <param name="contactID"></param>
+        /// <returns></returns>
+        /// <exception cref="NullReferenceException"></exception>
+        async Task<bool?> DeleteContact(long contactID)
+        {
+            if (this.ContactApiService != null)
+            {
+                string servicePath = base.AppConfigService.GetWebServiceFunctionURL("DeleteContact");
+                bool? ret = await this.ContactApiService.DeleteContact(servicePath, contactID);
 
                 return ret;
             }
@@ -84,6 +109,26 @@ namespace Demo.WebApp.Components.Modules.Contacts
             if (OnItemClick.HasDelegate)
             {
                 await OnItemClick.InvokeAsync(contact.ID);
+            }
+        }
+
+        async void ListItem_OnDelete(Contact contact)
+        {
+            ConfirmOptions confirmOptions = new ConfirmOptions() { OkButtonText = "OK", CancelButtonText = "No" };
+
+            bool? doContinue = await DialogSvc.Confirm("This will permanently delete the Contact. DO you want to continue", "Confirm", confirmOptions);
+            if (doContinue.HasValue && doContinue.Value)
+            {
+                bool? success = await this.DeleteContact(contact.ID);
+                if (success.HasValue && success.Value)
+                {
+                    await this.Refresh();
+                }
+                else
+                {
+                    AlertOptions alertOptions = new AlertOptions() { OkButtonText = "OK" };
+                    await DialogSvc.Alert("Contact was not deleted.", "Delete Failed", alertOptions);
+                }
             }
         }
 

@@ -68,7 +68,6 @@ namespace Demo.PresentationAPI.Controllers
             }
         }
 
-
         [HttpPost, ActionName("SaveContact")]
         [Route("/api/Contact")]
         public ActionResult<Contact> SaveContact([FromBody] Contact contact)
@@ -84,81 +83,20 @@ namespace Demo.PresentationAPI.Controllers
             }
         }
 
-        //[HttpPost, ActionName("GetContactForID")]
-        //[Route("/api/Contact")]
-        //public ActionResult<Contact> GetContactForID([FromBody] dynamic dto)
-        //{
-        //    try
-        //    {
-        //        // Get the "id" property from the dto object passed in
-        //        //
-        //        dynamic? data    = JsonConvert.DeserializeObject<dynamic>(dto.ToString());
-        //        long contactID   = data.id;
-
-        //        // Using the contactID retrieve the associated Contact object
-        //        //
-        //        Contact? contact = this._service.GetContactById(contactID);
-
-        //        return Ok(contact);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(ex.Message);
-        //    }
-        //}
-
-
-        //[HttpPost, ActionName("GetContactsForUserID")]
-        //[Route("/api/Contacts")]
-        //public ActionResult<IEnumerable<Contact>> GetContactsForUserID([FromBody] dynamic dto)
-        //{
-        //    try
-        //    {
-        //        var data = JsonConvert.DeserializeObject<dynamic>(dto.ToString());
-
-        //        List<Expression<Func<Contact, bool>>> filters = new();
-        //        long userID = data.id;
-        //        filters.Add(e=>e.UserID == userID);
-
-        //        var contactList = this._service.GetContacts(filters);
-        //        return Ok(contactList);
-        //    }
-        //    catch(Exception ex)
-        //    {
-        //        return BadRequest(ex.Message);
-        //    }
-        //}
-
-        //[HttpPost, ActionName("Register")]
-        //[Route("/api/Register")]
-        //public ActionResult<Contact> Register([FromBody] UserLoginRegistrationModel dataModel)
-        //{
-        //    try
-        //    {
-        //        Contact ret = this._service.Register(dataModel, "SYSTEM");
-        //        return Ok(ret);
-        //    }
-        //    catch (DuplicateNameException dupeX)
-        //    {
-        //        return StatusCode(601, new { Message = dupeX.Message });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(ex.Message);
-        //    }
-        //}
-
-        //// PUT api/<ContactController>/5
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody] string value)
-        //{
-        //}
-
-        //// DELETE api/<ContactController>/5
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
-        //}
+        [HttpDelete, ActionName("DeleteContact")]
+        [Route("/api/Contact/{contactId:long}")]
+        public ActionResult DeleteContact(long contactId)
+        {
+            try
+            {
+                bool ret = this._service.DeleteContact(contactId);
+                return Ok(ret);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
         #endregion public
     }
